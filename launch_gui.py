@@ -101,7 +101,7 @@ class AbstractorGUI:
                 sg.Checkbox("Fill forms automatically", default=True, key='-FILL_FORMS-'),
             ],
             [sg.Text("Template PDF:", size=(12, 1)), 
-             sg.Input(default_text="output/STEP2.pdf", key='-TEMPLATE_PATH-', size=(40, 1)),
+             sg.Input(default_text="templates/25-798 Legacy Title 25-3-12734 Veal St Landry.pdf", key='-TEMPLATE_PATH-', size=(40, 1)),
              sg.FileBrowse(file_types=(("PDF Files", "*.pdf"),))],
         ]
         
