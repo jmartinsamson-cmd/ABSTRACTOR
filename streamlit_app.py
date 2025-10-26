@@ -9,25 +9,16 @@ import json
 from pathlib import Path
 import tempfile
 import sys
+import os
 
 # Add current directory to path for module imports
-sys.path.insert(0, str(Path(__file__).parent))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, current_dir)
 
 # Import core modules
-try:
-    from src.pdf_parser import PDFParser
-    from src.field_extractor import FieldExtractor
-    from src.form_filler import FormFiller
-    from src.ocr_handler import OCRHandler
-except ImportError:
-    # Fallback for different directory structures
-    import sys
-    import os
-    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-    from src.pdf_parser import PDFParser
-    from src.field_extractor import FieldExtractor
-    from src.form_filler import FormFiller
-    from src.ocr_handler import OCRHandler
+from src.parser import PDFParser
+from src.field_extractor import FieldExtractor
+from src.form_filler import FormFiller
 
 # Page configuration
 st.set_page_config(
