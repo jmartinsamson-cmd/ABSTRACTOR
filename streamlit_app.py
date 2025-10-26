@@ -271,31 +271,73 @@ def main():
             st.session_state.extraction_results = {}
             st.session_state.filled_forms = {}
             
-            # Process each file
+            # Collect all extracted data and images from all PDFs
+            all_extracted_data = {}
+            all_images = []
             total_files = len(uploaded_files)
             
+            # Step 1: Extract data from all source PDFs
             for i, uploaded_file in enumerate(uploaded_files):
-                status_text.markdown(f"**Processing {i+1}/{total_files}: {uploaded_file.name}**")
+                status_text.markdown(f"**Extracting from {i+1}/{total_files}: {uploaded_file.name}**")
                 
-                # Determine template path for filling
-                template = template_path if enable_filling else None
-                
-                # Process the PDF
-                result, filled_pdf = process_pdf(uploaded_file, use_ocr, template)
+                # Process the PDF (without filling)
+                result, _ = process_pdf(uploaded_file, use_ocr, template_path=None)
                 
                 if result:
-                    # Store results
+                    # Store extraction results
                     st.session_state.extraction_results[uploaded_file.name] = result
-                    if filled_pdf:
-                        st.session_state.filled_forms[uploaded_file.name] = filled_pdf
+                    
+                    # Merge extracted data
+                    all_extracted_data.update(result['extracted_data'])
                     
                     # Update processed files list
                     if uploaded_file.name not in st.session_state.processed_files:
                         st.session_state.processed_files.append(uploaded_file.name)
                 
                 # Update progress
-                progress_bar.progress((i + 1) / total_files)
+                progress_bar.progress((i + 1) / (total_files + 1))
             
+            # Step 2: Create single filled PDF from combined data
+            if enable_filling and template_path and all_extracted_data:
+                status_text.markdown(f"**Creating final STEP2 form with combined data...**")
+                
+                try:
+                    with tempfile.TemporaryDirectory() as temp_dir:
+                        temp_path = Path(temp_dir)
+                        
+                        # Check template exists
+                        template_file = Path(template_path)
+                        if not template_file.exists():
+                            script_dir = Path(__file__).parent
+                            template_file = script_dir / template_path
+                        
+                        if template_file.exists():
+                            st.info("✍️ Filling STEP2 template with combined data...")
+                            
+                            output_file = temp_path / "STEP2_filled.pdf"
+                            
+                            filler = FormFiller(str(template_file))
+                            filler.fill_form(
+                                all_extracted_data,
+                                str(output_file),
+                                verbose=False,
+                                images=all_images if all_images else None
+                            )
+                            
+                            # Read filled PDF
+                            with open(output_file, 'rb') as f:
+                                filled_pdf_bytes = f.read()
+                            
+                            # Store single filled form
+                            st.session_state.filled_forms["STEP2_filled.pdf"] = filled_pdf_bytes
+                            st.success("✅ Single STEP2 form created successfully!")
+                        else:
+                            st.error(f"❌ Template not found: {template_path}")
+                
+                except Exception as fill_error:
+                    st.error(f"❌ Error creating filled form: {str(fill_error)}")
+            
+            progress_bar.progress(1.0)
             status_text.empty()
             progress_bar.empty()
             
@@ -331,42 +373,49 @@ def main():
         with tab2:
             st.subheader("📥 Download Results")
             
-            # Download extracted data as JSON
-            for filename, result in st.session_state.extraction_results.items():
-                col_download1, col_download2 = st.columns([2, 1])
-                
-                with col_download1:
-                    st.write(f"**{filename}**")
-                
-                with col_download2:
-                    # Download JSON
-                    json_data = json.dumps(result['extracted_data'], indent=2)
-                    st.download_button(
-                        label="📄 JSON",
-                        data=json_data,
-                        file_name=f"{Path(filename).stem}_data.json",
-                        mime="application/json",
-                        key=f"json_{filename}"
-                    )
-            
-            # Download filled forms
+            # Download filled form (single PDF)
             if st.session_state.filled_forms:
-                st.markdown("---")
-                st.subheader("📝 Filled Forms")
+                st.markdown("### 📝 Filled STEP2 Form")
+                st.info("✨ This single PDF contains combined data from all uploaded source files")
                 
                 for filename, pdf_bytes in st.session_state.filled_forms.items():
-                    col_form1, col_form2 = st.columns([2, 1])
+                    col_form1, col_form2 = st.columns([3, 1])
                     
                     with col_form1:
-                        st.write(f"**{Path(filename).stem}_filled.pdf**")
+                        st.write(f"**{filename}**")
+                        st.caption(f"Created from {len(st.session_state.extraction_results)} source file(s)")
                     
                     with col_form2:
                         st.download_button(
-                            label="📥 Download PDF",
+                            label="� Download PDF",
                             data=pdf_bytes,
-                            file_name=f"{Path(filename).stem}_filled.pdf",
+                            file_name=filename,
                             mime="application/pdf",
                             key=f"pdf_{filename}"
+                        )
+            else:
+                st.info("No filled forms available. Enable 'Fill Forms Automatically' and process PDFs.")
+            
+            # Optional: Download extracted data as JSON
+            if st.session_state.extraction_results:
+                st.markdown("---")
+                st.markdown("### � Source Data (Optional)")
+                
+                for filename, result in st.session_state.extraction_results.items():
+                    col_download1, col_download2 = st.columns([3, 1])
+                    
+                    with col_download1:
+                        st.write(f"**{filename}** - Extracted fields")
+                    
+                    with col_download2:
+                        # Download JSON
+                        json_data = json.dumps(result['extracted_data'], indent=2)
+                        st.download_button(
+                            label="📄 JSON",
+                            data=json_data,
+                            file_name=f"{Path(filename).stem}_data.json",
+                            mime="application/json",
+                            key=f"json_{filename}"
                         )
         
         with tab3:
