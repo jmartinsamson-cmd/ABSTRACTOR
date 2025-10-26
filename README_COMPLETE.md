@@ -21,6 +21,7 @@ Abstractor extracts data from source PDFs and automatically fills out target for
 ### For End Users (No Technical Knowledge Required)
 
 1. **Download & Run**
+
    ```
    Double-click: Abstractor.exe
    ```
@@ -94,6 +95,7 @@ pyinstaller --onefile --windowed --name=Abstractor ^
 ## 🎨 Features
 
 ### Core Capabilities
+
 - ✅ **Text Extraction** - PyPDF2 for digital text
 - ✅ **OCR** - Tesseract for scanned/handwritten documents
 - ✅ **Pattern Matching** - Intelligent field detection
@@ -102,6 +104,7 @@ pyinstaller --onefile --windowed --name=Abstractor ^
 - ✅ **JSON Export** - Structured data output
 
 ### User Interface
+
 - ✅ **Desktop GUI** - FreeSimpleGUI-based one-click interface
 - ✅ **Visual Calibrator** - Tkinter GUI for coordinate setup
 - ✅ **CLI Tools** - Command-line interface for automation
@@ -109,6 +112,7 @@ pyinstaller --onefile --windowed --name=Abstractor ^
 - ✅ **Error Handling** - User-friendly error messages
 
 ### Developer Tools
+
 - ✅ **Coordinate Finder** - Interactive field position tool
 - ✅ **Grid Overlay** - Visual coordinate calibration
 - ✅ **Debug Scripts** - PDF inspection and testing
@@ -155,6 +159,7 @@ ABSTRACTOR/
 ## 🔧 Dependencies
 
 ### Core Dependencies
+
 ```
 PyPDF2==3.0.1              # PDF reading/writing
 PyMuPDF>=1.23.0            # PDF form filling
@@ -164,12 +169,14 @@ matplotlib>=3.5.0          # Visualization
 ```
 
 ### GUI Dependencies
+
 ```
 FreeSimpleGUI>=5.0.0       # Desktop GUI
 pyinstaller>=5.0.0         # Executable packaging
 ```
 
 ### External Requirements
+
 - **Tesseract OCR**: `choco install tesseract` or use `install_tesseract.ps1`
 - **Poppler**: For pdf2image (bundled with conda)
 
@@ -325,6 +332,7 @@ Abstractor_v1.0/
 4. **Run:** Double-click Abstractor.exe (no installation!)
 
 **Requirements for End Users:**
+
 - Windows 10/11
 - No Python installation needed
 - Tesseract OCR (only if using OCR feature)
@@ -386,12 +394,14 @@ pip install -r requirements_gui.txt
 ## 📚 Documentation
 
 ### Quick References
+
 - **QUICKSTART.md** - Get started in 3 steps
 - **DESKTOP_APP_GUIDE.md** - Complete GUI guide
 - **GUI_README.md** - Visual calibrator quick start
 - **FINAL_SUMMARY.md** - Complete project overview
 
 ### Detailed Guides
+
 - **GETTING_STARTED.md** - Installation & setup
 - **PROJECT_SUMMARY.md** - Technical documentation
 - **COORDINATE_CALIBRATION.md** - Calibration guide
@@ -400,6 +410,7 @@ pip install -r requirements_gui.txt
 - **OCR_COMPLETE.md** - OCR implementation
 
 ### Reference Docs
+
 - **WORKFLOW.md** - System architecture
 - **QUICK_REFERENCE.md** - Command reference
 - **BUILD_COMPLETE.md** - Initial build notes
@@ -410,18 +421,23 @@ pip install -r requirements_gui.txt
 ## 🎓 Use Cases
 
 ### 1. Medical Forms
+
 Extract patient data from intake forms → Fill insurance forms
 
 ### 2. Legal Documents
+
 Parse case files → Auto-fill court forms
 
 ### 3. HR Onboarding
+
 Extract employee info → Fill benefits forms
 
 ### 4. Academic Records
+
 Parse transcripts → Fill application forms
 
 ### 5. Government Forms
+
 Extract ID/address data → Fill official forms
 
 ---
@@ -473,6 +489,7 @@ Private project - All rights reserved
 ## 🙏 Credits
 
 **Built with:**
+
 - **Python 3.13.7** - Core language
 - **FreeSimpleGUI** - Desktop GUI framework
 - **PyPDF2** - PDF text extraction
@@ -503,6 +520,7 @@ Private project - All rights reserved
 ## 📞 Support
 
 For issues or questions:
+
 1. Check **DESKTOP_APP_GUIDE.md** for troubleshooting
 2. Review **FINAL_SUMMARY.md** for technical details
 3. Run `python launch_gui.py` with console for debug info

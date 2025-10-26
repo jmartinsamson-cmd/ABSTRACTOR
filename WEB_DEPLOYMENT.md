@@ -9,6 +9,7 @@
 ### Step 1: Your GitHub Repo is Ready ✅
 
 You already have:
+
 - ✅ Repository: `jmartinsamson-cmd/ABSTRACTOR`
 - ✅ All code committed and pushed
 - ✅ Web app files created
@@ -16,7 +17,7 @@ You already have:
 ### Step 2: Deploy to Streamlit Cloud (5 minutes)
 
 1. **Go to Streamlit Cloud**
-   - Visit: https://share.streamlit.io/
+   - Visit: <https://share.streamlit.io/>
    - Click "Sign in with GitHub"
    - Authorize Streamlit to access your repositories
 
@@ -104,6 +105,7 @@ template_path = st.sidebar.text_input(
 ## 📦 What Gets Installed
 
 ### Python Packages (`requirements_web.txt`)
+
 ```
 streamlit>=1.28.0         # Web framework
 PyPDF2==3.0.1            # PDF reading
@@ -114,6 +116,7 @@ Pillow>=10.0.0           # Image processing
 ```
 
 ### System Packages (`packages.txt`)
+
 ```
 tesseract-ocr            # OCR engine
 tesseract-ocr-eng        # English language data
@@ -188,7 +191,7 @@ st.markdown('<h1 class="main-title">📄 ABSTRACTOR</h1>')
 
 ### Option 2: Render (Free Tier)
 
-1. **Create Render Account**: https://render.com/
+1. **Create Render Account**: <https://render.com/>
 2. **New Web Service** → Connect GitHub repo
 3. **Build Command**: `pip install -r requirements_web.txt`
 4. **Start Command**: `streamlit run streamlit_app.py --server.port=$PORT`
@@ -196,7 +199,7 @@ st.markdown('<h1 class="main-title">📄 ABSTRACTOR</h1>')
 
 ### Option 3: Railway (Easy Deploy)
 
-1. **Create Railway Account**: https://railway.app/
+1. **Create Railway Account**: <https://railway.app/>
 2. **New Project** → Deploy from GitHub
 3. **Select ABSTRACTOR repository**
 4. **Railway auto-detects Streamlit**
@@ -205,16 +208,19 @@ st.markdown('<h1 class="main-title">📄 ABSTRACTOR</h1>')
 ### Option 4: Heroku (More Control)
 
 Create `Procfile`:
+
 ```
 web: streamlit run streamlit_app.py --server.port=$PORT --server.address=0.0.0.0
 ```
 
 Create `runtime.txt`:
+
 ```
 python-3.11.6
 ```
 
 Deploy:
+
 ```bash
 heroku create abstractor-app
 git push heroku main
@@ -268,6 +274,7 @@ Then restart Streamlit Cloud app.
 ### App Crashes During Processing
 
 **Solutions:**
+
 1. Reduce PDF size (split large files)
 2. Disable OCR for simple text PDFs
 3. Upgrade to Streamlit Cloud paid tier (more memory)
@@ -279,6 +286,7 @@ Then restart Streamlit Cloud app.
 ### Speed Optimization
 
 1. **Cache Results** - Add Streamlit caching:
+
 ```python
 @st.cache_data
 def process_pdf(uploaded_file, use_ocr=True):
@@ -314,7 +322,7 @@ git push
 
 If auto-deploy doesn't trigger:
 
-1. Go to https://share.streamlit.io/
+1. Go to <https://share.streamlit.io/>
 2. Find your app
 3. Click "⋮" menu → "Reboot app"
 
@@ -394,7 +402,7 @@ git push
 
 ### 3. Deploy to Streamlit Cloud
 
-- Visit: https://share.streamlit.io/
+- Visit: <https://share.streamlit.io/>
 - Connect GitHub repo
 - Deploy from `streamlit_app.py`
 - Get shareable URL
@@ -407,9 +415,9 @@ Send her the URL - she can bookmark it and use it like any website!
 
 ## 📞 Support Resources
 
-- **Streamlit Docs**: https://docs.streamlit.io/
-- **Streamlit Community**: https://discuss.streamlit.io/
-- **Deployment Guide**: https://docs.streamlit.io/streamlit-community-cloud
+- **Streamlit Docs**: <https://docs.streamlit.io/>
+- **Streamlit Community**: <https://discuss.streamlit.io/>
+- **Deployment Guide**: <https://docs.streamlit.io/streamlit-community-cloud>
 
 ---
 
