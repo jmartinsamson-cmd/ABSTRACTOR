@@ -33,12 +33,12 @@ st.markdown("""
 <style>
     /* Main app background */
     .main {
-        background: linear-gradient(135deg, #ffeef8 0%, #fff5f7 50%, #ffe8f0 100%);
+        background: linear-gradient(135deg, #f0e6ff 0%, #e6d9ff 50%, #deccff 100%);
     }
     
     /* Sidebar styling */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #ffb3d9 0%, #ffd4e8 100%);
+        background: linear-gradient(180deg, #d4b3ff 0%, #e6d9ff 100%);
     }
     
     /* Title styling */
