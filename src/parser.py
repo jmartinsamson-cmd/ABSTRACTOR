@@ -1,10 +1,19 @@
 """
-PDF Parser - Extract text and structure from PDF documents
+PDF Parser - Extract text, images, and structure from PDF documents
 """
 from PyPDF2 import PdfReader
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Dict, Tuple
 import os
+import io
+
+# Image extraction with PyMuPDF (fitz)
+try:
+    import fitz  # PyMuPDF
+    FITZ_AVAILABLE = True
+except ImportError:
+    FITZ_AVAILABLE = False
+    print("Warning: PyMuPDF not available. Image extraction will be limited.")
 
 # OCR imports (optional - graceful degradation if not available)
 try:
@@ -144,6 +153,106 @@ class PDFParser:
             else:
                 print(f"⚠️  OCR failed: {str(e)}")
             return self.text
+    
+    def extract_images(self, output_dir: Optional[Path] = None) -> List[Dict[str, any]]:
+        """
+        Extract all images from the PDF document
+        
+        Args:
+            output_dir: Optional directory to save extracted images
+            
+        Returns:
+            List of dictionaries containing image info:
+            {
+                'page': page number (0-indexed),
+                'index': image index on page,
+                'width': image width,
+                'height': image height,
+                'data': image bytes,
+                'ext': image extension (png, jpg, etc),
+                'path': saved file path (if output_dir provided)
+            }
+        """
+        if not FITZ_AVAILABLE:
+            print("Warning: PyMuPDF not available. Cannot extract images.")
+            return []
+        
+        try:
+            import fitz  # Import here to use it
+            doc = fitz.open(str(self.pdf_path))
+            images = []
+            
+            for page_num in range(len(doc)):
+                page = doc[page_num]
+                image_list = page.get_images(full=True)
+                
+                for img_index, img in enumerate(image_list):
+                    xref = img[0]
+                    base_image = doc.extract_image(xref)
+                    image_bytes = base_image["image"]
+                    image_ext = base_image["ext"]
+                    width = base_image["width"]
+                    height = base_image["height"]
+                    
+                    image_info = {
+                        'page': page_num,
+                        'index': img_index,
+                        'width': width,
+                        'height': height,
+                        'data': image_bytes,
+                        'ext': image_ext,
+                        'xref': xref
+                    }
+                    
+                    # Save image if output directory provided
+                    if output_dir:
+                        output_dir = Path(output_dir)
+                        output_dir.mkdir(parents=True, exist_ok=True)
+                        
+                        image_filename = f"page{page_num + 1}_img{img_index + 1}.{image_ext}"
+                        image_path = output_dir / image_filename
+                        
+                        with open(image_path, "wb") as img_file:
+                            img_file.write(image_bytes)
+                        
+                        image_info['path'] = str(image_path)
+                    
+                    images.append(image_info)
+            
+            doc.close()
+            print(f"✓ Extracted {len(images)} images from PDF")
+            return images
+            
+        except Exception as e:
+            print(f"⚠️  Error extracting images: {str(e)}")
+            return []
+    
+    def get_largest_images(self, min_width: int = 200, min_height: int = 200, max_count: int = 10) -> List[Dict[str, any]]:
+        """
+        Extract only the largest/most significant images from the PDF
+        Useful for forms with photos (passport, ID, etc.)
+        
+        Args:
+            min_width: Minimum image width in pixels
+            min_height: Minimum image height in pixels
+            max_count: Maximum number of images to return
+            
+        Returns:
+            List of largest images sorted by size (descending)
+        """
+        all_images = self.extract_images()
+        
+        # Filter by minimum dimensions
+        filtered_images = [
+            img for img in all_images 
+            if img['width'] >= min_width and img['height'] >= min_height
+        ]
+        
+        # Sort by area (width * height) in descending order
+        filtered_images.sort(key=lambda x: x['width'] * x['height'], reverse=True)
+        
+        # Return top N images
+        return filtered_images[:max_count]
             
         except Exception as e:
             print(f"⚠️  OCR failed: {str(e)}")

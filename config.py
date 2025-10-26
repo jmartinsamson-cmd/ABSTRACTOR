@@ -76,9 +76,46 @@ DEED_INFO_MAPPING = {
 
 # Nested field mapping for tax_info
 TAX_INFO_MAPPING = {
-    "year": "tax_year",
+    "tax_year": "tax_year",
     "amount": "tax_amount",
     "assessed_value": "assessed_value",
+}
+
+# Image positions for STEP2.pdf template
+# Define where extracted images should be placed on the form
+IMAGE_POSITIONS = {
+    # Primary photo/passport image
+    "photo_main": {
+        "page": 0,           # First page
+        "x": 400,            # X coordinate (points from left)
+        "y": 100,            # Y coordinate (points from top)
+        "width": 150,        # Image width in points
+        "height": 200,       # Image height in points
+        "source_index": 0,   # Use first extracted image (largest)
+    },
+    
+    # Secondary ID/document image
+    "id_document": {
+        "page": 0,
+        "x": 400,
+        "y": 320,
+        "width": 150,
+        "height": 100,
+        "source_index": 1,   # Use second extracted image
+    },
+    
+    # Signature image (if extracted)
+    "signature": {
+        "page": 1,           # Second page
+        "x": 100,
+        "y": 650,
+        "width": 200,
+        "height": 50,
+        "source_index": 2,   # Use third extracted image
+    },
+    
+    # Additional document images can be added as needed
+    # Coordinates should be adjusted based on actual STEP2.pdf layout
 }
 
 # Output settings

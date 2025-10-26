@@ -115,16 +115,32 @@ def process_pdf(uploaded_file, use_ocr=True, template_path=None):
                 'fields_found': len(extracted_data)
             }
             
-            # Step 3: Fill form if template provided
+            # Step 3: Extract images from PDF
+            images = []
+            if use_ocr:  # Extract images if processing enabled
+                st.info("🖼️ Extracting images...")
+                try:
+                    images = parser.get_largest_images(min_width=150, min_height=150, max_count=5)
+                    result['images_extracted'] = len(images)
+                except Exception as img_error:
+                    st.warning(f"Could not extract images: {str(img_error)}")
+                    result['images_extracted'] = 0
+            
+            # Step 4: Fill form if template provided
             filled_pdf_bytes = None
             if template_path and Path(template_path).exists():
-                st.info("✍️ Filling form template...")
+                st.info("✍️ Filling form template with text and images...")
                 
                 # Create output file in temp directory
                 output_file = temp_path / f"{Path(uploaded_file.name).stem}_filled.pdf"
                 
                 filler = FormFiller(template_path)
-                filler.fill_form(extracted_data, str(output_file))
+                filler.fill_form(
+                    extracted_data, 
+                    str(output_file),
+                    verbose=False,
+                    images=images if images else None
+                )
                 
                 # Read filled PDF into bytes
                 with open(output_file, 'rb') as f:
