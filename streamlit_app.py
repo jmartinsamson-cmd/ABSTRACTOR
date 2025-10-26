@@ -28,151 +28,241 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS - Girly Theme
+# Custom CSS - Polished Girly Theme
 st.markdown("""
 <style>
-    /* Main app background - target all containers */
+    /* Main app background */
     .main {
-        background: linear-gradient(135deg, #c9b3e6 0%, #b39ddb 50%, #9575cd 100%) !important;
+        background: linear-gradient(135deg, #d4c5e8 0%, #c5b3db 50%, #b39dce 100%) !important;
     }
     
-    /* Remove white background from all containers */
     .main .block-container {
         background: transparent !important;
-        padding-top: 2rem;
+        padding-top: 1.5rem;
+        padding-bottom: 2rem;
+        max-width: 1200px;
     }
     
-    /* Target the main content area */
     [data-testid="stAppViewContainer"] {
-        background: linear-gradient(135deg, #c9b3e6 0%, #b39ddb 50%, #9575cd 100%) !important;
+        background: linear-gradient(135deg, #d4c5e8 0%, #c5b3db 50%, #b39dce 100%) !important;
     }
     
-    /* Ensure all content blocks are transparent */
     .element-container {
         background: transparent !important;
     }
     
-    /* Sidebar styling */
+    /* Sidebar - professional with shadow */
     [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #d4b3ff 0%, #e6d9ff 100%);
+        background: linear-gradient(180deg, #e6d9ff 0%, #f0e8ff 100%);
+        box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+        padding-top: 1rem;
     }
     
-    /* Title styling */
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] h3 {
+        font-size: 1rem;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        color: #7b5fa8;
+    }
+    
+    /* Header - horizontal layout */
+    .main-header {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 0.5rem;
+        padding: 1rem 0;
+        border-bottom: 2px solid rgba(255, 105, 180, 0.3);
+    }
+    
     .main-title {
-        text-align: center;
-        background: linear-gradient(135deg, #ff69b4, #ff1493, #db7093);
+        background: linear-gradient(135deg, #ff69b4, #ff1493);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        font-size: 3.5em;
+        font-size: 2.5em;
         font-weight: bold;
-        margin-bottom: 0.3em;
-        text-shadow: 2px 2px 4px rgba(255, 182, 193, 0.3);
-        font-family: 'Arial Rounded MT Bold', sans-serif;
+        margin: 0;
+        font-family: 'Segoe UI', Arial, sans-serif;
     }
     
     .subtitle {
         text-align: center;
-        color: #d946a6;
-        font-size: 1.3em;
-        margin-bottom: 2em;
-        font-style: italic;
-        font-weight: 500;
+        color: #c946a6;
+        font-size: 1em;
+        margin-bottom: 2rem;
+        font-weight: 400;
     }
     
-    /* Success boxes */
+    /* Section headers */
+    .section-header {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2d2d2d;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    /* Upload box - centered and refined */
+    [data-testid="stFileUploader"] {
+        background: rgba(255, 255, 255, 0.95);
+        border: 2px dashed #c99cde;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        max-width: 700px;
+        margin: 0 auto;
+    }
+    
+    [data-testid="stFileUploader"] label {
+        font-size: 0.95rem;
+        color: #555;
+    }
+    
+    /* Info cards */
+    .info-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        padding: 1.25rem;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        margin-bottom: 1rem;
+    }
+    
+    .info-card h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #7b5fa8;
+        margin-bottom: 0.75rem;
+    }
+    
+    .info-card ul {
+        margin: 0;
+        padding-left: 1.2rem;
+        font-size: 0.9rem;
+        line-height: 1.8;
+        color: #444;
+    }
+    
+    .info-card li {
+        margin-bottom: 0.4rem;
+    }
+    
+    /* Success/Error boxes */
     .success-box {
-        padding: 1.2em;
-        background: linear-gradient(135deg, #ffd4f0 0%, #ffe8f5 100%);
-        border: 2px solid #ffb3d9;
-        border-radius: 15px;
-        color: #c71585;
-        box-shadow: 0 4px 6px rgba(255, 105, 180, 0.2);
+        padding: 1rem;
+        background: rgba(220, 255, 220, 0.9);
+        border-left: 4px solid #4caf50;
+        border-radius: 8px;
+        color: #2e7d32;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 1rem 0;
     }
     
-    /* Error boxes */
     .error-box {
-        padding: 1.2em;
-        background: linear-gradient(135deg, #ffe0e6 0%, #fff0f3 100%);
-        border: 2px solid #ffb3c1;
-        border-radius: 15px;
-        color: #c91563;
-        box-shadow: 0 4px 6px rgba(255, 105, 135, 0.2);
-    }
-    
-    /* Info boxes */
-    .info-box {
-        padding: 1.2em;
-        background: linear-gradient(135deg, #e8d4ff 0%, #f5e8ff 100%);
-        border: 2px solid #d4b3ff;
-        border-radius: 15px;
-        color: #8b5bb5;
-        box-shadow: 0 4px 6px rgba(186, 135, 255, 0.2);
+        padding: 1rem;
+        background: rgba(255, 220, 220, 0.9);
+        border-left: 4px solid #f44336;
+        border-radius: 8px;
+        color: #c62828;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     
     /* Buttons */
     .stButton>button {
-        background: linear-gradient(135deg, #ff69b4, #ff1493);
+        background: linear-gradient(135deg, #da70d6, #ba55d3);
         color: white;
-        border-radius: 25px;
+        border-radius: 20px;
         border: none;
-        padding: 0.75em 2em;
-        font-weight: bold;
-        box-shadow: 0 4px 6px rgba(255, 105, 180, 0.3);
+        padding: 0.6rem 2rem;
+        font-weight: 600;
+        font-size: 1rem;
+        box-shadow: 0 3px 6px rgba(186, 85, 211, 0.3);
         transition: all 0.3s ease;
     }
     
     .stButton>button:hover {
-        background: linear-gradient(135deg, #ff1493, #ff69b4);
-        box-shadow: 0 6px 8px rgba(255, 105, 180, 0.4);
-        transform: translateY(-2px);
+        background: linear-gradient(135deg, #ba55d3, #9370db);
+        box-shadow: 0 4px 8px rgba(186, 85, 211, 0.4);
+        transform: translateY(-1px);
     }
     
     /* Metrics */
     [data-testid="stMetricValue"] {
-        color: #ff1493;
-        font-weight: bold;
+        color: #9370db;
+        font-weight: 700;
     }
     
-    /* Expander headers */
+    [data-testid="stMetricLabel"] {
+        font-size: 0.85rem;
+        color: #666;
+    }
+    
+    /* Expanders */
     .streamlit-expanderHeader {
-        background: linear-gradient(135deg, #ffe8f5 0%, #fff0f8 100%);
-        border-radius: 10px;
-        color: #d946a6;
-        font-weight: bold;
-    }
-    
-    /* File uploader */
-    [data-testid="stFileUploader"] {
-        background: linear-gradient(135deg, #fff5f9 0%, #fffafc 100%);
-        border: 2px dashed #ffb3d9;
-        border-radius: 15px;
-        padding: 1em;
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 8px;
+        color: #7b5fa8;
+        font-weight: 600;
+        font-size: 0.95rem;
     }
     
     /* Download buttons */
     .stDownloadButton>button {
-        background: linear-gradient(135deg, #da70d6, #ba55d3);
+        background: linear-gradient(135deg, #9370db, #7b68ee);
         color: white;
-        border-radius: 20px;
-        font-weight: bold;
+        border-radius: 16px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 0.5rem 1.5rem;
     }
     
-    /* Tab styling */
+    /* Tabs */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
+        gap: 6px;
+        border-bottom: 2px solid rgba(147, 112, 219, 0.2);
     }
     
     .stTabs [data-baseweb="tab"] {
-        background: linear-gradient(135deg, #ffe8f5 0%, #fff0f8 100%);
-        border-radius: 10px 10px 0 0;
-        color: #d946a6;
-        font-weight: bold;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 8px 8px 0 0;
+        color: #7b5fa8;
+        font-weight: 600;
+        padding: 0.6rem 1.2rem;
+        font-size: 0.95rem;
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #ff69b4, #ff1493);
+        background: linear-gradient(135deg, #da70d6, #ba55d3);
         color: white;
+    }
+    
+    /* Responsive design */
+    @media (max-width: 1024px) {
+        .main .block-container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+        
+        .main-title {
+            font-size: 2rem;
+        }
+        
+        .section-header {
+            font-size: 1.3rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .main-title {
+            font-size: 1.8rem;
+        }
+        
+        [data-testid="stFileUploader"] {
+            max-width: 100%;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -288,9 +378,13 @@ def process_pdf(uploaded_file, use_ocr=True, template_path=None):
 def main():
     """Main Streamlit application"""
     
-    # Header
-    st.markdown('<h1 class="main-title">✨� ABSTRACTOR 💖✨</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="subtitle">🌸 Magical PDF Form Processing - Extract, OCR, Fill 🌸</p>', unsafe_allow_html=True)
+    # Header - horizontal layout with divider
+    st.markdown('''
+    <div class="main-header">
+        <h1 class="main-title">✨ ABSTRACTOR 💖</h1>
+    </div>
+    <p class="subtitle">Magical PDF Form Processing - Extract, OCR, Fill</p>
+    ''', unsafe_allow_html=True)
     
     # Sidebar configuration
     st.sidebar.header("💫 Configuration")
@@ -317,59 +411,66 @@ def main():
     )
     
     st.sidebar.markdown("---")
-    st.sidebar.markdown("### � Statistics")
+    st.sidebar.markdown("### 📊 Statistics")
     st.sidebar.metric("Files Processed", len(st.session_state.processed_files))
     
-    # Main content area
-    col1, col2 = st.columns([2, 1])
+    # Main content area - upload section with centered layout
+    st.markdown('<h2 class="section-header">📁 Upload Source PDFs</h2>', unsafe_allow_html=True)
+    st.markdown('<p style="text-align: center; color: #666; margin-bottom: 1.5rem;">Upload one or more PDFs to extract information and fill your form</p>', unsafe_allow_html=True)
     
-    with col1:
-        st.header("📁✨ Upload Source PDFs")
-        st.header("📁 Upload Source PDFs")
-        
-        # File uploader
-        uploaded_files = st.file_uploader(
-            "Drop PDF files here or click to browse",
-            type=['pdf'],
-            accept_multiple_files=True,
-            help="Upload one or more PDF files to extract data from"
-        )
-        
-        if uploaded_files:
-            st.success(f"✅ {len(uploaded_files)} file(s) selected")
-            
-            # Show file list
-            with st.expander("📋 Selected Files"):
-                for i, file in enumerate(uploaded_files, 1):
-                    file_size = len(file.getvalue()) / 1024 / 1024  # MB
-                    st.write(f"{i}. **{file.name}** ({file_size:.2f} MB)")
-    
-    with col2:
-        st.header("💝 Quick Info")
-        st.markdown("""
-        **How to use:**
-        1. 📤 Upload source PDF(s)
-        2. ⚙️ Configure options (sidebar)
-        3. ✨ Click "Process PDFs"
-        4. 💖 Download results
-        
-        **Features:**
-        - 💕 Text extraction
-        - 🌸 OCR for scanned docs
-        - 🎀 Pattern matching
-        - ✨ Auto form filling
-        - 🦋 Batch processing
-        """)
-    
-    # Process button
-    st.markdown("---")
+    # File uploader - centered
+    uploaded_files = st.file_uploader(
+        "Drop PDF files here or click to browse",
+        type=['pdf'],
+        accept_multiple_files=True,
+        help="Upload one or more PDF files to extract data from",
+        label_visibility="collapsed"
+    )
     
     if uploaded_files:
+        st.success(f"✅ {len(uploaded_files)} file(s) selected")
+        
+        # Show file list
+        with st.expander("📋 Selected Files"):
+            for i, file in enumerate(uploaded_files, 1):
+                file_size = len(file.getvalue()) / 1024 / 1024  # MB
+                st.write(f"{i}. **{file.name}** ({file_size:.2f} MB)")
+    
+    # Quick Info panel - positioned below upload
+    st.markdown('''
+    <div class="info-card" style="margin-top: 2rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+        <h3 style="margin-top: 0; color: #7b68a6; font-size: 1.1rem;">� Quick Info</h3>
+        <ul style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.85rem; line-height: 1.6;">
+            <li>Upload multiple source PDFs to combine into one output</li>
+            <li>Enable OCR for scanned documents in the sidebar</li>
+            <li>Images are automatically extracted and can be inserted</li>
+            <li>All data is combined into a single filled PDF</li>
+        </ul>
+    </div>
+    ''', unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div style="margin-top: 2rem; max-width: 700px; margin-left: auto; margin-right: auto;">
+        <p style="font-size: 0.85rem; color: #7b68a6; font-weight: 600; margin-bottom: 0.5rem;">How to use:</p>
+        <ol style="margin: 0.5rem 0; padding-left: 1.5rem; font-size: 0.85rem; line-height: 1.6; color: #666;">
+            <li>Upload source PDF(s) above</li>
+            <li>Configure options in the sidebar</li>
+            <li>Click "Process PDFs" to extract and fill</li>
+            <li>Download your filled form and data</li>
+        </ol>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Process button - centered
+    st.markdown('<div style="margin: 2rem 0 1rem 0;"><hr style="border: none; border-top: 1px solid rgba(0,0,0,0.1);"></div>', unsafe_allow_html=True)
+    
+    if uploaded_files:
+        # Center the process button
         col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
         
         with col_btn2:
             process_button = st.button(
-                "✨� Process PDFs 💖✨",
+                "✨ Process PDFs 💖",
                 type="primary",
                 use_container_width=True
             )
