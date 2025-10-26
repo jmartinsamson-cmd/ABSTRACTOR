@@ -253,11 +253,3 @@ class PDFParser:
         
         # Return top N images
         return filtered_images[:max_count]
-            
-        except Exception as e:
-            print(f"⚠️  OCR failed: {str(e)}")
-            if 'poppler' in str(e).lower():
-                print("\nPoppler is required for PDF to image conversion.")
-                print("See OCR_SETUP.md for installation instructions.")
-            # Fall back to original text
-            return self.text
