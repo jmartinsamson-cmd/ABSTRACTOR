@@ -386,6 +386,10 @@ def main():
                     # Merge extracted data
                     all_extracted_data.update(result['extracted_data'])
                     
+                    # Collect images from this PDF
+                    if result.get('images'):
+                        all_images.extend(result['images'])
+                    
                     # Update processed files list
                     if uploaded_file.name not in st.session_state.processed_files:
                         st.session_state.processed_files.append(uploaded_file.name)
