@@ -1,0 +1,15 @@
+# GUI Application Dependencies
+# Install with: pip install -r requirements_gui.txt
+
+# GUI Framework (free alternative to PySimpleGUI)
+FreeSimpleGUI>=5.0.0
+
+# All existing project dependencies
+PyPDF2==3.0.1
+PyMuPDF>=1.23.0
+pytesseract==0.3.10
+pdf2image==1.16.3
+matplotlib>=3.5.0
+
+# Packaging
+pyinstaller>=5.0.0
