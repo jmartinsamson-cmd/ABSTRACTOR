@@ -9,7 +9,7 @@ from src.parser import PDFParser
 
 def main():
     # Configuration
-    template_path = "templates/STEP2.pdf"  # Updated path
+    template_path = "templates/25-798 Legacy Title 25-3-12734 Veal St Landry.pdf"  # Legacy STEP2 template
     input_dir = Path("input")  # Source PDFs
     output_json_dir = Path("output")  # JSON data
     output_dir = Path("filled_forms")
@@ -28,7 +28,7 @@ def main():
     # Check template exists
     if not Path(template_path).exists():
         print(f"Error: Template not found: {template_path}")
-        print("Please ensure STEP2.pdf is in the templates/ folder")
+        print("Please ensure '25-798 Legacy Title 25-3-12734 Veal St Landry.pdf' is in the templates/ folder")
         return
     
     print(f"\n{'='*70}")
