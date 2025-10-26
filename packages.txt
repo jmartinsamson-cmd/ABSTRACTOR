@@ -1,0 +1,6 @@
+# System packages for Streamlit Cloud deployment
+# Required for OCR functionality
+
+tesseract-ocr
+tesseract-ocr-eng
+poppler-utils

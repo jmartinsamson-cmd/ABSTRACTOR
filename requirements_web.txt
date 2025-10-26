@@ -1,0 +1,21 @@
+# Web Application Requirements for ABSTRACTOR
+# For deployment to Streamlit Cloud, Render, Railway, etc.
+
+# Web Framework
+streamlit>=1.28.0
+
+# Core PDF Processing
+PyPDF2==3.0.1
+PyMuPDF>=1.23.0
+
+# OCR Dependencies
+pytesseract==0.3.10
+pdf2image==1.16.3
+Pillow>=10.0.0
+
+# Data Processing
+python-dateutil>=2.8.2
+
+# Note: Tesseract OCR binary must be installed on the server
+# For Streamlit Cloud, use packages.txt file
+# For other platforms, use Docker or system packages
