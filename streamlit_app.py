@@ -98,8 +98,9 @@ def process_pdf(uploaded_file, use_ocr=True, template_path=None):
             # Use OCR if enabled and text is minimal
             if use_ocr and len(text.strip()) < 100:
                 st.info("🔍 Low text detected - using OCR...")
-                ocr_handler = OCRHandler(str(input_file))
-                text = ocr_handler.extract_text_with_ocr()
+                # OCR is built into PDFParser
+                parser_with_ocr = PDFParser(str(input_file), use_ocr=True)
+                text = parser_with_ocr.extract_text()
             
             # Step 2: Extract fields
             st.info("🔎 Extracting fields...")
