@@ -22,48 +22,141 @@ from src.form_filler import FormFiller
 
 # Page configuration
 st.set_page_config(
-    page_title="Abstractor - PDF Form Processor",
-    page_icon="📄",
+    page_title="Abstractor - PDF Form Processor ✨",
+    page_icon="�",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
+# Custom CSS - Girly Theme
 st.markdown("""
 <style>
+    /* Main app background */
+    .main {
+        background: linear-gradient(135deg, #ffeef8 0%, #fff5f7 50%, #ffe8f0 100%);
+    }
+    
+    /* Sidebar styling */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #ffb3d9 0%, #ffd4e8 100%);
+    }
+    
+    /* Title styling */
     .main-title {
         text-align: center;
-        color: #1f77b4;
-        font-size: 3em;
+        background: linear-gradient(135deg, #ff69b4, #ff1493, #db7093);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-size: 3.5em;
         font-weight: bold;
-        margin-bottom: 0.5em;
+        margin-bottom: 0.3em;
+        text-shadow: 2px 2px 4px rgba(255, 182, 193, 0.3);
+        font-family: 'Arial Rounded MT Bold', sans-serif;
     }
+    
     .subtitle {
         text-align: center;
-        color: #666;
-        font-size: 1.2em;
+        color: #d946a6;
+        font-size: 1.3em;
         margin-bottom: 2em;
+        font-style: italic;
+        font-weight: 500;
     }
+    
+    /* Success boxes */
     .success-box {
-        padding: 1em;
-        background-color: #d4edda;
-        border: 1px solid #c3e6cb;
-        border-radius: 5px;
-        color: #155724;
+        padding: 1.2em;
+        background: linear-gradient(135deg, #ffd4f0 0%, #ffe8f5 100%);
+        border: 2px solid #ffb3d9;
+        border-radius: 15px;
+        color: #c71585;
+        box-shadow: 0 4px 6px rgba(255, 105, 180, 0.2);
     }
+    
+    /* Error boxes */
     .error-box {
-        padding: 1em;
-        background-color: #f8d7da;
-        border: 1px solid #f5c6cb;
-        border-radius: 5px;
-        color: #721c24;
+        padding: 1.2em;
+        background: linear-gradient(135deg, #ffe0e6 0%, #fff0f3 100%);
+        border: 2px solid #ffb3c1;
+        border-radius: 15px;
+        color: #c91563;
+        box-shadow: 0 4px 6px rgba(255, 105, 135, 0.2);
     }
+    
+    /* Info boxes */
     .info-box {
+        padding: 1.2em;
+        background: linear-gradient(135deg, #e8d4ff 0%, #f5e8ff 100%);
+        border: 2px solid #d4b3ff;
+        border-radius: 15px;
+        color: #8b5bb5;
+        box-shadow: 0 4px 6px rgba(186, 135, 255, 0.2);
+    }
+    
+    /* Buttons */
+    .stButton>button {
+        background: linear-gradient(135deg, #ff69b4, #ff1493);
+        color: white;
+        border-radius: 25px;
+        border: none;
+        padding: 0.75em 2em;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(255, 105, 180, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .stButton>button:hover {
+        background: linear-gradient(135deg, #ff1493, #ff69b4);
+        box-shadow: 0 6px 8px rgba(255, 105, 180, 0.4);
+        transform: translateY(-2px);
+    }
+    
+    /* Metrics */
+    [data-testid="stMetricValue"] {
+        color: #ff1493;
+        font-weight: bold;
+    }
+    
+    /* Expander headers */
+    .streamlit-expanderHeader {
+        background: linear-gradient(135deg, #ffe8f5 0%, #fff0f8 100%);
+        border-radius: 10px;
+        color: #d946a6;
+        font-weight: bold;
+    }
+    
+    /* File uploader */
+    [data-testid="stFileUploader"] {
+        background: linear-gradient(135deg, #fff5f9 0%, #fffafc 100%);
+        border: 2px dashed #ffb3d9;
+        border-radius: 15px;
         padding: 1em;
-        background-color: #d1ecf1;
-        border: 1px solid #bee5eb;
-        border-radius: 5px;
-        color: #0c5460;
+    }
+    
+    /* Download buttons */
+    .stDownloadButton>button {
+        background: linear-gradient(135deg, #da70d6, #ba55d3);
+        color: white;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+    
+    /* Tab styling */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        background: linear-gradient(135deg, #ffe8f5 0%, #fff0f8 100%);
+        border-radius: 10px 10px 0 0;
+        color: #d946a6;
+        font-weight: bold;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: linear-gradient(135deg, #ff69b4, #ff1493);
+        color: white;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -180,41 +273,42 @@ def main():
     """Main Streamlit application"""
     
     # Header
-    st.markdown('<h1 class="main-title">📄 ABSTRACTOR</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="subtitle">Automated PDF Form Processing - Extract, OCR, Fill</p>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-title">✨� ABSTRACTOR 💖✨</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="subtitle">🌸 Magical PDF Form Processing - Extract, OCR, Fill 🌸</p>', unsafe_allow_html=True)
     
     # Sidebar configuration
-    st.sidebar.header("⚙️ Configuration")
+    st.sidebar.header("💫 Configuration")
     
     # OCR option
     use_ocr = st.sidebar.checkbox(
-        "Enable OCR",
+        "✨ Enable OCR Magic",
         value=True,
         help="Use Optical Character Recognition for scanned/handwritten PDFs"
     )
     
     # Form filling option
     enable_filling = st.sidebar.checkbox(
-        "Fill Forms Automatically",
+        "💝 Fill Forms Automatically",
         value=True,
         help="Automatically fill form template with extracted data"
     )
     
     # Template path
     template_path = st.sidebar.text_input(
-        "Form Template Path",
+        "📋 Form Template Path",
         value="templates/STEP2.pdf",
         help="Path to the PDF form template (Legacy STEP2)"
     )
     
     st.sidebar.markdown("---")
-    st.sidebar.markdown("### 📊 Statistics")
+    st.sidebar.markdown("### � Statistics")
     st.sidebar.metric("Files Processed", len(st.session_state.processed_files))
     
     # Main content area
     col1, col2 = st.columns([2, 1])
     
     with col1:
+        st.header("📁✨ Upload Source PDFs")
         st.header("📁 Upload Source PDFs")
         
         # File uploader
@@ -235,20 +329,20 @@ def main():
                     st.write(f"{i}. **{file.name}** ({file_size:.2f} MB)")
     
     with col2:
-        st.header("🎯 Quick Info")
+        st.header("💝 Quick Info")
         st.markdown("""
         **How to use:**
-        1. Upload source PDF(s)
-        2. Configure options (sidebar)
-        3. Click "Process PDFs"
-        4. Download results
+        1. 📤 Upload source PDF(s)
+        2. ⚙️ Configure options (sidebar)
+        3. ✨ Click "Process PDFs"
+        4. 💖 Download results
         
         **Features:**
-        - ✅ Text extraction
-        - ✅ OCR for scanned docs
-        - ✅ Pattern matching
-        - ✅ Auto form filling
-        - ✅ Batch processing
+        - 💕 Text extraction
+        - 🌸 OCR for scanned docs
+        - 🎀 Pattern matching
+        - ✨ Auto form filling
+        - 🦋 Batch processing
         """)
     
     # Process button
@@ -259,7 +353,7 @@ def main():
         
         with col_btn2:
             process_button = st.button(
-                "🚀 Process PDFs",
+                "✨� Process PDFs 💖✨",
                 type="primary",
                 use_container_width=True
             )
