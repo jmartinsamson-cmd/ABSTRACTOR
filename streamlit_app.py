@@ -128,25 +128,43 @@ def process_pdf(uploaded_file, use_ocr=True, template_path=None):
             
             # Step 4: Fill form if template provided
             filled_pdf_bytes = None
-            if template_path and Path(template_path).exists():
-                st.info("✍️ Filling form template with text and images...")
+            if template_path:
+                # Check if template exists
+                template_file = Path(template_path)
+                if not template_file.exists():
+                    # Try relative to script directory
+                    script_dir = Path(__file__).parent
+                    template_file = script_dir / template_path
                 
-                # Create output file in temp directory
-                output_file = temp_path / f"{Path(uploaded_file.name).stem}_filled.pdf"
-                
-                filler = FormFiller(template_path)
-                filler.fill_form(
-                    extracted_data, 
-                    str(output_file),
-                    verbose=False,
-                    images=images if images else None
-                )
-                
-                # Read filled PDF into bytes
-                with open(output_file, 'rb') as f:
-                    filled_pdf_bytes = f.read()
-                
-                result['filled_form'] = True
+                if template_file.exists():
+                    st.info("✍️ Filling form template with text and images...")
+                    
+                    try:
+                        # Create output file in temp directory
+                        output_file = temp_path / f"{Path(uploaded_file.name).stem}_filled.pdf"
+                        
+                        filler = FormFiller(str(template_file))
+                        filler.fill_form(
+                            extracted_data, 
+                            str(output_file),
+                            verbose=False,
+                            images=images if images else None
+                        )
+                        
+                        # Read filled PDF into bytes
+                        with open(output_file, 'rb') as f:
+                            filled_pdf_bytes = f.read()
+                        
+                        result['filled_form'] = True
+                        st.success(f"✅ Form filled successfully!")
+                    except Exception as fill_error:
+                        st.error(f"❌ Error filling form: {str(fill_error)}")
+                        result['filled_form'] = False
+                else:
+                    st.warning(f"⚠️ Template not found: {template_path}")
+                    st.info(f"📁 Looked in: {template_file.absolute()}")
+                    st.error("❌ **ACTION NEEDED:** Add your STEP2.pdf template to the templates/ folder")
+                    result['filled_form'] = False
             else:
                 result['filled_form'] = False
             
