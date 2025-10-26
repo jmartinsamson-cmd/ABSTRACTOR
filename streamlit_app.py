@@ -183,10 +183,7 @@ def main():
     # Template path
     template_path = st.sidebar.text_input(
         "Form Template Path",
-        value="templates/25-798 Legacy Title 25-3-12734 Veal St Landry.pdf",
-        help="Path to the Legacy STEP2 PDF form template"
-    )
-        value="templates/25-798 Legacy Title 25-3-12734 Veal St Landry.pdf",
+        value="templates/STEP2.pdf",
         help="Path to the PDF form template (Legacy STEP2)"
     )
     
