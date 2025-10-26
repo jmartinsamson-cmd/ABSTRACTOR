@@ -122,9 +122,11 @@ def process_pdf(uploaded_file, use_ocr=True, template_path=None):
                 try:
                     images = parser.get_largest_images(min_width=150, min_height=150, max_count=5)
                     result['images_extracted'] = len(images)
+                    result['images'] = images  # Store image data for display
                 except Exception as img_error:
                     st.warning(f"Could not extract images: {str(img_error)}")
                     result['images_extracted'] = 0
+                    result['images'] = []
             
             # Step 4: Fill form if template provided
             filled_pdf_bytes = None
@@ -356,12 +358,14 @@ def main():
             # Show extracted data for each file
             for filename, result in st.session_state.extraction_results.items():
                 with st.expander(f"📄 {filename}", expanded=True):
-                    col_a, col_b = st.columns([1, 1])
+                    col_a, col_b, col_c = st.columns([1, 1, 1])
                     
                     with col_a:
                         st.metric("Text Length", f"{result['text_length']:,} chars")
                     with col_b:
                         st.metric("Fields Found", result['fields_found'])
+                    with col_c:
+                        st.metric("Images Extracted", result.get('images_extracted', 0))
                     
                     # Show extracted fields
                     if result['extracted_data']:
@@ -369,6 +373,28 @@ def main():
                         st.json(result['extracted_data'])
                     else:
                         st.warning("No fields extracted - check patterns in config.py")
+                    
+                    # Show extracted images
+                    if result.get('images') and len(result['images']) > 0:
+                        st.subheader("🖼️ Extracted Images:")
+                        
+                        # Display images in columns
+                        img_cols = st.columns(min(len(result['images']), 3))
+                        for idx, img_data in enumerate(result['images']):
+                            col_idx = idx % 3
+                            with img_cols[col_idx]:
+                                try:
+                                    # Display image from bytes
+                                    from PIL import Image
+                                    import io
+                                    
+                                    image = Image.open(io.BytesIO(img_data['data']))
+                                    st.image(image, 
+                                            caption=f"Image {idx+1}: {img_data['width']}x{img_data['height']}px",
+                                            use_container_width=True)
+                                except Exception as e:
+                                    st.error(f"Could not display image {idx+1}: {str(e)}")
+
         
         with tab2:
             st.subheader("📥 Download Results")
@@ -425,23 +451,59 @@ def main():
             total_processed = len(st.session_state.extraction_results)
             total_fields = sum(r['fields_found'] for r in st.session_state.extraction_results.values())
             total_filled = len(st.session_state.filled_forms)
+            total_images = sum(r.get('images_extracted', 0) for r in st.session_state.extraction_results.values())
             
-            col_stat1, col_stat2, col_stat3 = st.columns(3)
+            col_stat1, col_stat2, col_stat3, col_stat4 = st.columns(4)
             
             with col_stat1:
                 st.metric("PDFs Processed", total_processed)
             with col_stat2:
                 st.metric("Total Fields Extracted", total_fields)
             with col_stat3:
+                st.metric("Images Extracted", total_images)
+            with col_stat4:
                 st.metric("Forms Filled", total_filled)
             
+            # Show all extracted images that went into the final form
+            if total_images > 0:
+                st.markdown("---")
+                st.markdown("### 🖼️ All Images Used in Final Form")
+                
+                all_imgs = []
+                for filename, result in st.session_state.extraction_results.items():
+                    if result.get('images'):
+                        for img in result['images']:
+                            all_imgs.append({
+                                'source': filename,
+                                'data': img
+                            })
+                
+                if all_imgs:
+                    img_cols = st.columns(min(len(all_imgs), 4))
+                    for idx, img_info in enumerate(all_imgs):
+                        col_idx = idx % 4
+                        with img_cols[col_idx]:
+                            try:
+                                from PIL import Image
+                                import io
+                                
+                                image = Image.open(io.BytesIO(img_info['data']['data']))
+                                st.image(image, 
+                                        caption=f"From: {Path(img_info['source']).stem}",
+                                        use_container_width=True)
+                                st.caption(f"{img_info['data']['width']}x{img_info['data']['height']}px")
+                            except Exception as e:
+                                st.error(f"Error: {str(e)}")
+            
             # Per-file breakdown
-            st.markdown("### File Details")
+            st.markdown("---")
+            st.markdown("### 📋 File Details")
             for filename, result in st.session_state.extraction_results.items():
-                cols = st.columns([3, 1, 1, 1])
+                cols = st.columns([3, 1, 1, 1, 1])
                 cols[0].write(filename)
                 cols[1].write(f"{result['text_length']:,} chars")
                 cols[2].write(f"{result['fields_found']} fields")
+                cols[3].write(f"{result.get('images_extracted', 0)} images")
                 cols[3].write("✅ Filled" if result.get('filled_form') else "—")
     
     # Footer
