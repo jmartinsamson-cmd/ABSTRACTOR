@@ -276,8 +276,12 @@ if 'filled_forms' not in st.session_state:
 
 def process_pdf(uploaded_file, use_ocr=True, template_path=None):
     """Process a single PDF file"""
+    REQUIRED_FIELDS = [
+        "owner_name", "property_address", "parcel_number", "legal_description"
+        # Add more required fields as needed
+    ]
+    
     try:
-        # Create temporary directory for processing
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
             
@@ -285,108 +289,97 @@ def process_pdf(uploaded_file, use_ocr=True, template_path=None):
             input_file = temp_path / uploaded_file.name
             with open(input_file, 'wb') as f:
                 f.write(uploaded_file.getbuffer())
-            result = None
+            
+            # Step 1: Extract text
+            st.info(f"📖 Extracting text from {uploaded_file.name}...")
+            parser = PDFParser(str(input_file))
+            text = parser.extract_text()
+            
+            if use_ocr and len(text.strip()) < 100:
+                st.info("🔍 Low text detected - using OCR...")
+                parser_with_ocr = PDFParser(str(input_file), use_ocr=True)
+                text = parser_with_ocr.extract_text()
+            
+            # Step 2: Extract fields
+            st.info("🔎 Extracting fields...")
+            extractor = FieldExtractor(text)
+            extracted_data = extractor.extract_all_fields()
+            
+            # Required field check
+            missing_fields = [f for f in REQUIRED_FIELDS if f not in extracted_data or not extracted_data[f]]
+            if missing_fields:
+                st.warning(f"Missing required fields: {', '.join(missing_fields)}. Please review and edit before export.")
+                result = {
+                    'filename': uploaded_file.name,
+                    'extracted_data': extracted_data,
+                    'text_length': len(text),
+                    'fields_found': len(extracted_data),
+                    'missing_fields': missing_fields
+                }
+                return result, None
+            
+            # Store results
+            result = {
+                'filename': uploaded_file.name,
+                'extracted_data': extracted_data,
+                'text_length': len(text),
+                'fields_found': len(extracted_data)
+            }
+            
+            # Step 3: Extract images from PDF
+            images = []
+            if use_ocr:
+                st.info("🖼️ Extracting images...")
+                try:
+                    images = parser.get_largest_images(min_width=150, min_height=150, max_count=5)
+                    result['images_extracted'] = len(images)
+                    result['images'] = images
+                except Exception as img_error:
+                    st.warning(f"Image extraction failed: {str(img_error)}. Export will proceed without images.")
+                    result['images_extracted'] = 0
+                    result['images'] = []
+            
+            # Step 4: Fill form if template provided
             filled_pdf_bytes = None
-            REQUIRED_FIELDS = [
-                "owner_name", "property_address", "parcel_number", "legal_description"
-                # Add more required fields as needed
-            ]
-            try:
-                with tempfile.TemporaryDirectory() as temp_dir:
-                    temp_path = Path(temp_dir)
-                    # Save uploaded file
-                    try:
-                        input_file = temp_path / uploaded_file.name
-                        with open(input_file, 'wb') as f:
-                            f.write(uploaded_file.getbuffer())
-                        # Step 1: Extract text
-                        st.info(f"📖 Extracting text from {uploaded_file.name}...")
-                        parser = PDFParser(str(input_file))
-                        text = parser.extract_text()
-                        if use_ocr and len(text.strip()) < 100:
-                            st.info("🔍 Low text detected - using OCR...")
-                            parser_with_ocr = PDFParser(str(input_file), use_ocr=True)
-                            text = parser_with_ocr.extract_text()
-                        # Step 2: Extract fields
-                        st.info("🔎 Extracting fields...")
-                        extractor = FieldExtractor(text)
-                        extracted_data = extractor.extract_all_fields()
-                        # Required field check
-                        missing_fields = [f for f in REQUIRED_FIELDS if f not in extracted_data or not extracted_data[f]]
-                        if missing_fields:
-                            st.warning(f"Missing required fields: {', '.join(missing_fields)}. Please review and edit before export.")
-                            result = {
-                                'filename': uploaded_file.name,
-                                'extracted_data': extracted_data,
-                                'text_length': len(text),
-                                'fields_found': len(extracted_data),
-                                'missing_fields': missing_fields
-                            }
-                            return result, None
-                        # Store results
-                        result = {
-                            'filename': uploaded_file.name,
-                            'extracted_data': extracted_data,
-                            'text_length': len(text),
-                            'fields_found': len(extracted_data)
-                        }
-                        # Step 3: Extract images from PDF
-                        images = []
-                        if use_ocr:
-                            st.info("🖼️ Extracting images...")
-                            try:
-                                images = parser.get_largest_images(min_width=150, min_height=150, max_count=5)
-                                result['images_extracted'] = len(images)
-                                result['images'] = images
-                            except Exception as img_error:
-                                st.warning(f"Image extraction failed: {str(img_error)}. Export will proceed without images.")
-                                result['images_extracted'] = 0
-                                result['images'] = []
-                        # Step 4: Fill form if template provided
-                        filled_pdf_bytes = None
-                        if template_path:
-                            template_file = Path(template_path)
-                            if not template_file.exists():
-                                script_dir = Path(__file__).parent
-                                template_file = script_dir / template_path
-                            if not template_file.exists():
-                                st.error(f"❌ Template not found: {template_path}")
-                                st.info(f"📁 Looked in: {template_file.absolute()}")
-                                st.error("❌ ACTION NEEDED: Add your STEP2.pdf template to the templates/ folder and retry export.")
-                                result['filled_form'] = False
-                                return result, None
-                            st.info("✍️ Filling form template with text and images...")
-                            try:
-                                output_file = temp_path / f"{Path(uploaded_file.name).stem}_filled.pdf"
-                                filler = FormFiller(str(template_file))
-                                filler.fill_form(
-                                    extracted_data,
-                                    str(output_file),
-                                    verbose=False,
-                                    images=images
-                                )
-                                with open(output_file, 'rb') as f:
-                                    filled_pdf_bytes = f.read()
-                                result['filled_form'] = True
-                                st.success("✅ Form filled successfully!")
-                            except Exception as fill_error:
-                                st.error(f"❌ Error filling form: {str(fill_error)}")
-                                result['filled_form'] = False
-                                return result, None
-                        else:
-                            result['filled_form'] = False
-                    except Exception as inner_e:
-                        st.error(f"❌ Error processing {uploaded_file.name}: {str(inner_e)}")
-                        result = None
-                        filled_pdf_bytes = None
-                        return None, None
-                    return result, filled_pdf_bytes
-            except Exception as outer_e:
-                st.error(f"❌ Unexpected error during processing: {str(outer_e)}")
-                st.info("You may retry the operation or check your input files and configuration.")
-                return None, None
-                    return None, None
+            if template_path:
+                template_file = Path(template_path)
+                if not template_file.exists():
+                    script_dir = Path(__file__).parent
+                    template_file = script_dir / template_path
+                
+                if not template_file.exists():
+                    st.error(f"❌ Template not found: {template_path}")
+                    st.info(f"📁 Looked in: {template_file.absolute()}")
+                    st.error("❌ ACTION NEEDED: Add your STEP2.pdf template to the templates/ folder and retry export.")
+                    result['filled_form'] = False
+                    return result, None
+                
+                st.info("✍️ Filling form template with text and images...")
+                try:
+                    output_file = temp_path / f"{Path(uploaded_file.name).stem}_filled.pdf"
+                    filler = FormFiller(str(template_file))
+                    filler.fill_form(
+                        extracted_data,
+                        str(output_file),
+                        verbose=False,
+                        images=images
+                    )
+                    with open(output_file, 'rb') as f:
+                        filled_pdf_bytes = f.read()
+                    result['filled_form'] = True
+                    st.success("✅ Form filled successfully!")
+                except Exception as fill_error:
+                    st.error(f"❌ Error filling form: {str(fill_error)}")
+                    result['filled_form'] = False
+                    return result, None
+            else:
+                result['filled_form'] = False
+            
+            return result, filled_pdf_bytes
+            
+    except Exception as e:
         st.error(f"❌ Error processing {uploaded_file.name}: {str(e)}")
+        st.info("You may retry the operation or check your input files and configuration.")
         return None, None
 
 def main():
