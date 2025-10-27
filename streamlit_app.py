@@ -376,6 +376,114 @@ def process_pdf(uploaded_file, use_ocr=True, template_path=None):
         return None, None
 
 def main():
+        with tab4:
+            st.subheader("🖊️ In-Browser PDF Editing (PDF.js)")
+            st.info("Edit, annotate, and highlight your PDF directly in the browser. Download your edited PDF, then re-upload it below to save changes.")
+            import base64
+            import os
+            pdf_bytes = None
+            if st.session_state.filled_forms:
+                pdf_bytes = list(st.session_state.filled_forms.values())[0]
+            if pdf_bytes:
+                b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+                pdfjs_url = "https://mozilla.github.io/pdf.js/web/viewer.html"
+                pdfjs_iframe = f'''<iframe src="{pdfjs_url}?file=data:application/pdf;base64,{b64_pdf}" width="900" height="900" allowfullscreen></iframe>'''
+                st.components.v1.html(pdfjs_iframe, height=900)
+            else:
+                st.warning("No filled PDF available for editing.")
+
+            st.markdown("---")
+            st.subheader("⬆️ Upload Edited PDF to Save")
+            uploaded_edited_pdf = st.file_uploader("Re-upload your edited PDF here to save changes to the output folder.", type=["pdf"], key="edited_pdf_upload")
+            output_dir = Path("output")
+            output_dir.mkdir(exist_ok=True)
+            # List all edited PDFs in output folder
+            edited_pdfs = [f for f in os.listdir(output_dir) if f.lower().endswith('.pdf') and f.startswith('edited_')]
+            most_recent_pdf = None
+            if edited_pdfs:
+                # Sort by modified time, newest first
+                edited_pdfs.sort(key=lambda f: os.path.getmtime(output_dir / f), reverse=True)
+                most_recent_pdf = edited_pdfs[0]
+
+            # Handle upload/save with feedback and filename validation
+            if uploaded_edited_pdf:
+                save_path = output_dir / f"edited_{uploaded_edited_pdf.name}"
+                if save_path.exists():
+                    st.error(f"A file named {save_path.name} already exists.")
+                    overwrite = st.checkbox(f"Overwrite {save_path.name}?", key="overwrite_checkbox")
+                    if overwrite:
+                        with open(save_path, "wb") as f:
+                            f.write(uploaded_edited_pdf.getbuffer())
+                        st.success(f"Edited PDF overwritten: {save_path}")
+                        most_recent_pdf = save_path.name
+                    else:
+                        new_name = st.text_input("Rename your file:", value=f"edited_{uploaded_edited_pdf.name}", key="rename_input")
+                        if st.button("Save as new file", key="save_new_file_btn"):
+                            new_path = output_dir / new_name
+                            with open(new_path, "wb") as f:
+                                f.write(uploaded_edited_pdf.getbuffer())
+                            st.success(f"Edited PDF saved as: {new_path}")
+                            most_recent_pdf = new_path.name
+                else:
+                    with open(save_path, "wb") as f:
+                        f.write(uploaded_edited_pdf.getbuffer())
+                    st.success(f"Edited PDF saved to: {save_path}")
+                    most_recent_pdf = save_path.name
+
+            st.markdown("---")
+            st.subheader("📄 Edited PDFs in Output Folder")
+            if edited_pdfs:
+                for fname in edited_pdfs:
+                    col1, col2 = st.columns([3,1])
+                    with col1:
+                        st.write(fname)
+                        st.caption(f"Last modified: {os.path.getmtime(output_dir / fname):.0f}")
+                    with col2:
+                        with open(output_dir / fname, "rb") as f:
+                            pdf_bytes = f.read()
+                        st.download_button("⬇️ Download", data=pdf_bytes, file_name=fname, mime="application/pdf", key=f"download_{fname}")
+                        if st.button("👁️ View Inline", key=f"view_{fname}"):
+                            st.session_state["view_pdf_inline"] = fname
+
+                # Auto-display most recent PDF inline
+                if most_recent_pdf:
+                    st.markdown("---")
+                    st.subheader(f"👁️ Most Recent Edited PDF: {most_recent_pdf}")
+                    with open(output_dir / most_recent_pdf, "rb") as f:
+                        b64_uploaded = base64.b64encode(f.read()).decode('utf-8')
+                        pdf_display = f'<iframe src="data:application/pdf;base64,{b64_uploaded}" width="900" height="900" type="application/pdf"></iframe>'
+                        st.components.v1.html(pdf_display, height=900)
+            else:
+                st.info("No edited PDFs found in output folder.")
+        with tab4:
+            st.subheader("🖊️ In-Browser PDF Editing (PDF.js)")
+            st.info("Edit, annotate, and highlight your PDF directly in the browser. Download your edited PDF, then re-upload it below to save changes.")
+            import base64
+            pdf_bytes = None
+            if st.session_state.filled_forms:
+                pdf_bytes = list(st.session_state.filled_forms.values())[0]
+            if pdf_bytes:
+                b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+                pdfjs_url = "https://mozilla.github.io/pdf.js/web/viewer.html"
+                pdfjs_iframe = f'''<iframe src="{pdfjs_url}?file=data:application/pdf;base64,{b64_pdf}" width="900" height="900" allowfullscreen></iframe>'''
+                st.components.v1.html(pdfjs_iframe, height=900)
+            else:
+                st.warning("No filled PDF available for editing.")
+
+            st.markdown("---")
+            st.subheader("⬆️ Upload Edited PDF to Save")
+            uploaded_edited_pdf = st.file_uploader("Re-upload your edited PDF here to save changes to the output folder.", type=["pdf"], key="edited_pdf_upload")
+            if uploaded_edited_pdf:
+                output_dir = Path("output")
+                output_dir.mkdir(exist_ok=True)
+                output_path = output_dir / f"edited_{uploaded_edited_pdf.name}"
+                with open(output_path, "wb") as f:
+                    f.write(uploaded_edited_pdf.getbuffer())
+                st.success(f"Edited PDF saved to: {output_path}")
+                # Optionally display the uploaded PDF inline
+                b64_uploaded = base64.b64encode(uploaded_edited_pdf.getbuffer()).decode('utf-8')
+                pdf_display = f'<iframe src="data:application/pdf;base64,{b64_uploaded}" width="900" height="900" type="application/pdf"></iframe>'
+                st.components.v1.html(pdf_display, height=900)
     """Main Streamlit application"""
     
     # Header - horizontal layout with divider
@@ -563,7 +671,26 @@ def main():
         st.header("📊 Results")
 
         # Tabs for different views
-        tab1, tab2, tab3 = st.tabs(["📋 Extracted Data", "📥 Downloads", "📈 Summary"])
+    tab1, tab2, tab3, tab4 = st.tabs(["📋 Extracted Data", "📥 Downloads", "📈 Summary", "🖊️ PDF.js Editor"])
+        with tab4:
+            st.subheader("🖊️ In-Browser PDF Editing (PDF.js)")
+            st.info("Edit, annotate, and highlight your PDF directly in the browser. Changes are not saved to backend automatically.")
+            # Embed PDF.js viewer/editor
+            # Use the first filled PDF for demo (can be extended for selection)
+            import base64
+            pdf_bytes = None
+            if st.session_state.filled_forms:
+                # Use the first PDF in filled_forms
+                pdf_bytes = list(st.session_state.filled_forms.values())[0]
+            if pdf_bytes:
+                b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+                # PDF.js viewer HTML (hosted version or local)
+                pdfjs_url = "https://mozilla.github.io/pdf.js/web/viewer.html"
+                # Pass PDF as base64 data URI
+                pdfjs_iframe = f'''<iframe src="{pdfjs_url}?file=data:application/pdf;base64,{b64_pdf}" width="900" height="900" allowfullscreen></iframe>'''
+                st.components.v1.html(pdfjs_iframe, height=900)
+            else:
+                st.warning("No filled PDF available for editing.")
 
         with tab1:
             # Show extracted data for each file
