@@ -565,51 +565,96 @@ def main():
     if st.session_state.extraction_results:
         st.markdown("---")
         st.header("📊 Results")
-        
+
         # Tabs for different views
         tab1, tab2, tab3 = st.tabs(["📋 Extracted Data", "📥 Downloads", "📈 Summary"])
-        
+
         with tab1:
             # Show extracted data for each file
             for filename, result in st.session_state.extraction_results.items():
                 with st.expander(f"📄 {filename}", expanded=True):
                     col_a, col_b, col_c = st.columns([1, 1, 1])
-                    
                     with col_a:
                         st.metric("Text Length", f"{result['text_length']:,} chars")
                     with col_b:
                         st.metric("Fields Found", result['fields_found'])
                     with col_c:
                         st.metric("Images Extracted", result.get('images_extracted', 0))
-                    
-                    # Show extracted fields
-                    if result['extracted_data']:
-                        st.subheader("Extracted Fields:")
-                        st.json(result['extracted_data'])
+
+                    # Editable form overlay for extracted fields
+                    st.subheader("Edit Extracted Fields:")
+                    with st.form(f"edit_form_{filename}"):
+                        edited_fields = {}
+                        for key, value in result['extracted_data'].items():
+                            if isinstance(value, dict):
+                                st.markdown(f"**{key}:**")
+                                edited_fields[key] = {}
+                                for subkey, subval in value.items():
+                                    edited_fields[key][subkey] = st.text_input(f"{key} - {subkey}", value=subval if subval is not None else "")
+                            else:
+                                edited_fields[key] = st.text_input(key, value=value if value is not None else "")
+                        submit_edits = st.form_submit_button("Apply Edits & Refill PDF")
+
+                    # If edits submitted, refill PDF and update preview
+                    if submit_edits:
+                        st.info("Refilling PDF with updated fields...")
+                        # Refill PDF using FormFiller
+                        import tempfile
+                        from src.form_filler import FormFiller
+                        template_path = st.sidebar.text_input(
+                            "📋 Form Template Path",
+                            value="templates/STEP2.pdf",
+                            help="Path to the PDF form template (Legacy STEP2)"
+                        )
+                        with tempfile.TemporaryDirectory() as temp_dir:
+                            output_file = Path(temp_dir) / f"{Path(filename).stem}_edited_filled.pdf"
+                            filler = FormFiller(template_path)
+                            images = result.get('images', None)
+                            try:
+                                filler.fill_form(edited_fields, str(output_file), verbose=False, images=images)
+                                with open(output_file, 'rb') as f:
+                                    edited_pdf_bytes = f.read()
+                                st.session_state.filled_forms[f"{Path(filename).stem}_edited_filled.pdf"] = edited_pdf_bytes
+                                st.success("PDF updated and refilled with your edits!")
+                            except Exception as e:
+                                st.error(f"Error updating PDF: {str(e)}")
+
+                    # Inline PDF viewer for filled PDF (if available)
+                    st.subheader("Review Filled PDF:")
+                    pdf_key = f"{Path(filename).stem}_edited_filled.pdf"
+                    pdf_bytes = st.session_state.filled_forms.get(pdf_key)
+                    if pdf_bytes:
+                        # Embed PDF in HTML using base64
+                        import base64
+                        b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+                        pdf_display = f'<iframe src="data:application/pdf;base64,{b64_pdf}" width="700" height="900" type="application/pdf"></iframe>'
+                        st.components.v1.html(pdf_display, height=900)
+                        # Save to output folder
+                        output_dir = Path("output")
+                        output_dir.mkdir(exist_ok=True)
+                        output_path = output_dir / pdf_key
+                        with open(output_path, "wb") as f:
+                            f.write(pdf_bytes)
+                        st.success(f"Updated PDF saved to: {output_path}")
                     else:
-                        st.warning("No fields extracted - check patterns in config.py")
-                    
+                        st.info("No edited PDF available yet. Make edits and refill to preview.")
+
                     # Show extracted images
                     if result.get('images') and len(result['images']) > 0:
                         st.subheader("🖼️ Extracted Images:")
-                        
-                        # Display images in columns
                         img_cols = st.columns(min(len(result['images']), 3))
                         for idx, img_data in enumerate(result['images']):
                             col_idx = idx % 3
                             with img_cols[col_idx]:
                                 try:
-                                    # Display image from bytes
                                     from PIL import Image
                                     import io
-                                    
                                     image = Image.open(io.BytesIO(img_data['data']))
                                     st.image(image, 
                                             caption=f"Image {idx+1}: {img_data['width']}x{img_data['height']}px",
                                             use_container_width=True)
                                 except Exception as e:
                                     st.error(f"Could not display image {idx+1}: {str(e)}")
-
         
         with tab2:
             st.subheader("📥 Download Results")
