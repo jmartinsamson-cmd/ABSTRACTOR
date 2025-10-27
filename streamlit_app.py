@@ -405,7 +405,6 @@ def main():
 
         # Button to generate final PDF
         if st.button("Generate Final PDF", key="generate_final_pdf_btn"):
-            import tempfile
             from src.form_filler import FormFiller
             template_path = "templates/STEP2.pdf"
             st.write("### Debug: Merged Data for Final PDF")
@@ -790,7 +789,6 @@ def main():
                     # If edits submitted, refill PDF and update preview
                     if submit_edits:
                         st.info("Refilling PDF with updated fields...")
-                        import tempfile
                         from src.form_filler import FormFiller
                         template_path = "templates/STEP2.pdf"
                         with tempfile.TemporaryDirectory() as temp_dir:
