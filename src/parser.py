@@ -27,6 +27,39 @@ except ImportError:
 
 
 class PDFParser:
+    def _preprocess_image_for_ocr(self, image):
+        """Apply basic pre-processing: grayscale, sharpen, autocontrast."""
+        from PIL import ImageFilter, ImageOps
+        # Convert to grayscale
+        image = image.convert('L')
+        # Apply autocontrast
+        image = ImageOps.autocontrast(image)
+        # Apply sharpening filter
+        image = image.filter(ImageFilter.SHARPEN)
+        # (Optional) Deskew: Pillow does not have native deskew, but Tesseract can handle some skew
+        return image
+
+    def extract_raw_ocr_text(self) -> str:
+        """Extract raw OCR text from all pages and return as a string (for debugging)"""
+        if not OCR_AVAILABLE:
+            return "OCR libraries not available."
+        try:
+            images = convert_from_path(
+                self.pdf_path,
+                dpi=300,
+                fmt='jpeg'
+            )
+            ocr_text = []
+            for i, image in enumerate(images):
+                pre_image = self._preprocess_image_for_ocr(image)
+                page_text = pytesseract.image_to_string(
+                    pre_image,
+                    config='--psm 1'
+                )
+                ocr_text.append(f"--- Page {i+1} ---\n{page_text.strip()}\n")
+            return "\n".join(ocr_text)
+        except Exception as e:
+            return f"OCR extraction failed: {str(e)}"
     """Handles PDF text extraction and basic preprocessing"""
     
     def __init__(self, pdf_path: str, use_ocr: bool = True):
@@ -115,34 +148,27 @@ class PDFParser:
             print("⚠️  OCR libraries not available.")
             print("Install with: pip install pytesseract pdf2image Pillow")
             return self.text
-        
         try:
             print("Converting PDF to images...")
-            # Convert PDF pages to images
             images = convert_from_path(
                 self.pdf_path,
-                dpi=300,  # Higher DPI = better quality
+                dpi=300,
                 fmt='jpeg'
             )
-            
             print(f"Running OCR on {len(images)} page(s)...")
             self.pages = []
-            
             for i, image in enumerate(images):
                 print(f"  Processing page {i+1}/{len(images)}...")
-                # Perform OCR on the image
+                pre_image = self._preprocess_image_for_ocr(image)
                 page_text = pytesseract.image_to_string(
-                    image,
-                    config='--psm 1'  # Automatic page segmentation with OSD
+                    pre_image,
+                    config='--psm 1'
                 )
                 self.pages.append(page_text)
-            
             self.text = "\n\n".join(self.pages)
             self.ocr_used = True
             print(f"✓ OCR complete! Extracted {len(self.text)} characters")
-            
             return self.text
-            
         except FileNotFoundError as e:
             if 'tesseract' in str(e).lower():
                 print("\n⚠️  Tesseract OCR is not installed!")
@@ -241,15 +267,26 @@ class PDFParser:
             List of largest images sorted by size (descending)
         """
         all_images = self.extract_images()
-        
-        # Filter by minimum dimensions
+
+        # Lower min size for single-page docs and signatures/stamps
+        min_width = min_width if min_width < 200 else 50
+        min_height = min_height if min_height < 200 else 50
+
         filtered_images = [
-            img for img in all_images 
+            img for img in all_images
             if img['width'] >= min_width and img['height'] >= min_height
         ]
-        
+
+        # If no images meet threshold, fallback to all images
+        if not filtered_images and all_images:
+            filtered_images = all_images
+
+        # Always return at least one image if present
+        if not filtered_images and all_images:
+            filtered_images = [all_images[0]]
+
         # Sort by area (width * height) in descending order
         filtered_images.sort(key=lambda x: x['width'] * x['height'], reverse=True)
-        
+
         # Return top N images
         return filtered_images[:max_count]

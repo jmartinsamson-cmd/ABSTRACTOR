@@ -16,18 +16,44 @@ MIN_WORD_DENSITY = 50  # Minimum chars per word
 
 FIELD_PATTERNS = {
     "owner_name": [
-        r"(?:Owner|Grantee|Grantor|Name|Owner Name)[\s:]+([A-Z][a-zA-Z\s\-']{2,})",
+        r"(?:Owner|Grantee|Grantor|Name|Owner Name|Primary Ownership|Percent of Ownership|Ownership Began|Ownership Ended)[\s:]*([A-Z][a-zA-Z\s\-']{2,})",
         r"(?:Owner:|Name:)[\s]*([A-Z][a-zA-Z\s\-']{2,})",
+        r"^([A-Z][a-zA-Z\s\-']{2,})$",  # single-line name
+        r"([A-Z][a-zA-Z\s\-']{2,})",  # fallback: any capitalized word sequence
     ],
     "property_address": [
         r"(?:Property Address|Address|Property Location|Site Address)[\s:]+(.+?)(?:\n|$)",
         r"(?:Located at|Premises at|Situs:)[\s:]+(.+?)(?:\n|$)",
+        r"(\d{1,5}\s+[A-Z][a-zA-Z\s]+)",  # fallback: number + street name
     ],
     "parcel_number": [
         r"(?:Parcel Number|Parcel No\.?|APN)[\s:]+([\w\-]+)",
+        r"([A-Z0-9]{5,})",  # fallback: any long alphanumeric sequence
     ],
     "legal_description": [
-        r"(?:Legal Description|Description)[\s:]+(.+?)(?:\n|$)",
+        r"(?:Legal Description|Description|LOTS|Block|Plat|Section|Township|Range|Tract)[\s:]+(.+?)(?:\n|$)",
+        r"LOTS[\s:]*([A-Za-z0-9\-\s\(\)]+)",
+    ],
+    "COB": [
+        r"COB[\s:]*([0-9]+); Page: ([0-9]+); Filed: ([0-9/]+) ([0-9:AMP]+)\s*\[([a-zA-Z0-9: ]+)\]",
+    ],
+    "MOB": [
+        r"MOB[\s:]*([0-9]+); Page: ([0-9]+); Filed: ([0-9/]+) ([0-9:AMP]+)\s*\[([a-zA-Z0-9: ]+)\]",
+    ],
+    "millage_rate": [
+        r"Millage Rate[\s:]*([0-9.]+)",
+    ],
+    "homestead_pct": [
+        r"Homestead Pct[\s:]*([0-9.]+)",
+    ],
+    "homestead_code": [
+        r"Homestead Code[\s:]*([A-Z])",
+    ],
+    "homestead_credit": [
+        r"Homestead Credit[\s:]*([0-9.,]+)\s*Status: *\((AC|IN)\) ([A-Za-z]+)",
+    ],
+    "note": [
+        r"Note[\s:]*([A-Za-z0-9.,;:'\"\s\-]+)",
     ],
     "county": [
         r"County[\s:]+([A-Za-z\s]+)",
@@ -99,6 +125,13 @@ FORM_FIELD_MAPPING = {
     "state": "state",
     "lot_info": "lot_number",
     "subdivision": "subdivision",
+    "COB": "COB",
+    "MOB": "MOB",
+    "millage_rate": "millage_rate",
+    "homestead_pct": "homestead_pct",
+    "homestead_code": "homestead_code",
+    "homestead_credit": "homestead_credit",
+    "note": "note",
     # Add any new fields here as needed
 }
 
