@@ -660,6 +660,10 @@ def main():
                     # Update processed files list
                     if uploaded_file.name not in st.session_state.processed_files:
                         st.session_state.processed_files.append(uploaded_file.name)
+                    
+                    st.success(f"✅ Extracted {result['fields_found']} fields and {result.get('images_extracted', 0)} images from {uploaded_file.name}")
+                else:
+                    st.error(f"❌ Failed to process {uploaded_file.name}")
                 
                 # Update progress
                 progress_bar.progress((i + 1) / (total_files + 1))
@@ -680,6 +684,8 @@ def main():
                         
                         if template_file.exists():
                             st.info("✍️ Filling STEP2 template with combined data...")
+                            st.write(f"📊 Debug: Merged {len(all_extracted_data)} fields from {total_files} file(s)")
+                            st.write(f"🖼️ Debug: {len(all_images)} images collected")
                             
                             output_file = temp_path / "STEP2_filled.pdf"
                             
@@ -697,19 +703,33 @@ def main():
                             
                             # Store single filled form
                             st.session_state.filled_forms["STEP2_filled.pdf"] = filled_pdf_bytes
-                            st.success("✅ Single STEP2 form created successfully!")
+                            st.success(f"✅ Single STEP2 form created successfully! ({len(filled_pdf_bytes)} bytes)")
                         else:
                             st.error(f"❌ Template not found: {template_path}")
+                            st.error(f"📁 Searched in: {template_file.absolute()}")
+                            st.error("❌ ACTION NEEDED: Add STEP2.pdf to templates/ folder")
                 
                 except Exception as fill_error:
+                    import traceback
                     st.error(f"❌ Error creating filled form: {str(fill_error)}")
+                    st.code(traceback.format_exc())
+            elif enable_filling and not all_extracted_data:
+                st.warning("⚠️ No data was extracted from the uploaded files. PDF form was not filled.")
+            elif not enable_filling:
+                st.info("ℹ️ Form filling is disabled. Enable 'Fill Forms Automatically' in sidebar to generate PDF.")
             
             progress_bar.progress(1.0)
             status_text.empty()
             progress_bar.empty()
             
-            # Show completion message
+            # Show completion message with summary
             st.markdown('<div class="success-box"><h3>✅ Processing Complete!</h3></div>', unsafe_allow_html=True)
+            st.write(f"📊 **Summary:** Processed {total_files} file(s), extracted {len(all_extracted_data)} fields, collected {len(all_images)} images")
+            
+            # Debug: Show what was extracted
+            with st.expander("🔍 View Extracted Data (Debug)"):
+                st.json(all_extracted_data)
+                st.write(f"Total fields: {len(all_extracted_data)}")
     
     # Results section
     if st.session_state.extraction_results:
