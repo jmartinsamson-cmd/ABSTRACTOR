@@ -4,6 +4,7 @@ from pathlib import Path
 import tempfile
 import sys
 import os
+import base64
 from src.parser import PDFParser
 from src.field_extractor import FieldExtractor
 from src.form_filler import FormFiller
@@ -405,7 +406,6 @@ def main():
 
         # Button to generate final PDF
         if st.button("Generate Final PDF", key="generate_final_pdf_btn"):
-            from src.form_filler import FormFiller
             template_path = "templates/STEP2.pdf"
             st.write("### Debug: Merged Data for Final PDF")
             st.json(all_edited_data)
@@ -446,7 +446,6 @@ def main():
                 mime="application/pdf",
                 key="download_final_pdf_btn"
             )
-            import base64
             b64_pdf = base64.b64encode(st.session_state.final_pdf_bytes).decode('utf-8')
             pdf_display = f'<iframe src="data:application/pdf;base64,{b64_pdf}" width="900" height="900" type="application/pdf"></iframe>'
             components.html(pdf_display, height=900)
@@ -742,7 +741,6 @@ def main():
         st.info("Edit, annotate, and highlight your PDF directly in the browser. Changes are not saved to backend automatically.")
         # Embed PDF.js viewer/editor
         # Use the first filled PDF for demo (can be extended for selection)
-        import base64
         pdf_bytes = None
         if st.session_state.filled_forms:
             # Use the first PDF in filled_forms
@@ -789,7 +787,6 @@ def main():
                     # If edits submitted, refill PDF and update preview
                     if submit_edits:
                         st.info("Refilling PDF with updated fields...")
-                        from src.form_filler import FormFiller
                         template_path = "templates/STEP2.pdf"
                         with tempfile.TemporaryDirectory() as temp_dir:
                             output_file = Path(temp_dir) / f"{Path(selected_file).stem}_edited_filled.pdf"
@@ -809,7 +806,6 @@ def main():
                     pdf_key = f"{Path(selected_file).stem}_edited_filled.pdf"
                     pdf_bytes = st.session_state.filled_forms.get(pdf_key)
                     if pdf_bytes:
-                        import base64
                         b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
                         pdf_display = f'<iframe src="data:application/pdf;base64,{b64_pdf}" width="700" height="900" type="application/pdf"></iframe>'
                         components.html(pdf_display, height=900)
