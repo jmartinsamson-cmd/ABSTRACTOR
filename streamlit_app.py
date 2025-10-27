@@ -601,10 +601,12 @@ def main():
                         # Refill PDF using FormFiller
                         import tempfile
                         from src.form_filler import FormFiller
+                        # Use template_path from sidebar only
                         template_path = st.sidebar.text_input(
                             "📋 Form Template Path",
                             value="templates/STEP2.pdf",
-                            help="Path to the PDF form template (Legacy STEP2)"
+                            help="Path to the PDF form template (Legacy STEP2)",
+                            key="sidebar_template_path"
                         )
                         with tempfile.TemporaryDirectory() as temp_dir:
                             output_file = Path(temp_dir) / f"{Path(filename).stem}_edited_filled.pdf"
