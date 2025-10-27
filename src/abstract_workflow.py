@@ -72,10 +72,17 @@ class AbstractWorkflow:
                 file_bytes = uploaded_file.getvalue()
                 scanned_docs_bytes.append(file_bytes)
                 
-                # Extract text and data
-                with io.BytesIO(file_bytes) as file_stream:
-                    # Use existing parser
-                    parser = PDFParser(file_stream, use_ocr=use_ocr)
+                # Extract text and data - PDFParser needs a file path
+                import tempfile
+                import os
+                
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_file:
+                    temp_file.write(file_bytes)
+                    temp_path = temp_file.name
+                
+                try:
+                    # Use existing parser with file path
+                    parser = PDFParser(temp_path, use_ocr=use_ocr)
                     text = parser.extract_text()
                     
                     # Extract fields
@@ -91,8 +98,14 @@ class AbstractWorkflow:
                             max_count=5
                         )
                         all_images.extend(images)
-                    except Exception as img_error:
+                    except Exception:
                         # Image extraction is optional
+                        pass
+                finally:
+                    # Clean up temp file
+                    try:
+                        os.unlink(temp_path)
+                    except Exception:
                         pass
             
             result['scanned_docs'] = scanned_docs_bytes
