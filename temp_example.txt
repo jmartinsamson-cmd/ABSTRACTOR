@@ -1,0 +1,524 @@
+Warning: OCR libraries not available. Install pytesseract and pdf2image for scanned PDF support.
+======================================================================
+DEBUG: 25-776 Mortgage Connect 3723626-1 Dorsey Vermilion (1).pdf
+======================================================================
+
+Pages: 37
+Total characters: 10641
+Total lines: 280
+
+----------------------------------------------------------------------
+FULL TEXT EXTRACTION:
+----------------------------------------------------------------------
+Title Order Sheet :-
+Mortgage Connect of Louisiana, LLC
+333 TEXAS ST
+SUITE 1349
+SHREVEPORT LA , 71101
+Email: fcltitle@MortgageConnectLP.com
+Order Number :
+Order Date :
+Abstractor:
+Abstractor Fee :Vendor ID : 
+Vendor Fax : 44365
+$ 150.0010/13/2025
+Please confirm receipt of this order with your  
+within 24 hours of the receipt of this order .
+>>>    CONTACT Mortgage Connect of Louisiana , LLC IMMEDIATELY IF UNABLE TO ACCEPT THIS ASSIGNMENT     <<<3723626-1 Order Type :PFCF-Pre-Foreclosure Report Full
+BRADLEY ABSTRACT LLC
+337-234-7495
+Due Date: 10/14/2025  12:00:00AM
+INSTRUCTIONS
+Instructions: THIS SEARCH SHOULD INCLUDE A MORTGAGE /DEED OF TRUST TO FREEDOM MORTGAGE .
+IF MORTGAGE /DEED OF TRUST INTO FREEDOM MORTGAGE IS NOT FOUND , PLEASE CONFIRM THAT A 
+SEARCH FOR AN ASSIGNMENT TO FREEDOM MORTGAGE WAS COMPLETED AND THE RESULT .
+********** PLAT MAP COPY REQUIRED IN THE STATE OF SC **********
+~EMAIL fcltitle @mortgageconnectlp.com with completed search or any questions.~
+A FULL SEARCH for the STATUTORY NUMBER OF YEARS required in the state in which the property is 
+located.
+The search must include:A complete search write up of all documents – Full copies of documents shown on the search . If PUD/Condo 
+then supply pertinent page copies of the declaration.  Please provide recording information for all amendments 
+and include copies.
+Tax information with copies including tax amounts and payment status , due dates, special assessment amounts, 
+assessed values.  Report delinquent tax amounts, if any, including County, City and all Municipal Taxes /Liens.  
+Provide copy of the ASSESSMENT CARD .
+Plat map copy is required in FL, NC, SC and V A .
+Copies need to be in date order, newest to oldest in groups, i.e., deeds in order, then all mortgages, all 
+liens/judgments, pud/condo declarations and amendments, etc.
+Special Instructions:  When reporting TAX INFORMATION please provide the original DUE DATE and AMOUNT if the status of taxes has been paid or delinquent.
+ALLEN  DORSEY Borrower :
+Address : 307 S SEVERIN STERATH , LA 70533
+  County: Vermilion
+       Loan Amount : $158,585.00
+                   PRODUCT DELIVERY INSTRUCTIONS
+Email Report To : 
+    fcltitle@MortgageConnectLP.com
+Or Fax Search To : 
+    866-789-1845
+Order Number: 3723626-1 Print Date: 10/13/2025  5:47 pm Page 1 of 1
+
+INVOICE
+BRADLEY ABSTRACT, LLC
+300 Rue Beauregard
+Ste C
+Lafayette, LA 70508michelle@bradleyabstractors.com
++1 (337) 234-7470
+MORTGAGE CONNECT
+Bill to
+Jean Depietro
+Invoice details
+Invoice no.: 25-776
+Terms: Net 30
+Invoice date: 10/15/2025
+Due date: 11/14/2025Name: Dorsey, Allen
+File #: 3723626-1
+Type: FULL
+#Date Product or service Description Qty Rate Amount
+1.10/15/2025 Abstracting fees Abstracting fees 1 $150.00 $150.00
+2.10/15/2025 COPIES 1 $30.00 $30.00
+Ways to pay
+View and paySubtotal $180.00
+Sales tax $13.50
+Total $193.50
+
+P.O.BOX 52521
+Lafayette,Louisiana 70505
+(337)234-7470
+fax: (337)234-7495
+website: www.bradleyabstractors.com
+MORTGAGEANDCONVEYANCECERTIFICATE
+FOR: MortgageConnect FILE#: 3723626-1
+PROPERTYDESCRIPTION:LOT40,S33'OF41,S7'OFLOT42&43Townof
+Erath,VermilionParish,LA(307S.SeverinStreet,Erath,LA)
+PERIODOFSEARCH:August25,1976toOctober10,2025
+PRESENTOWNER(S):AllenandSaraDorsey
+This is not a Title Opinion. Ihave made a careful examinationofthe MORTGAGE andCONVEYANCE records inthe
+office ofthe ClerkandRecorderinthe ParishofVERMILION,State ofLouisiana,inthe names ofthe parties as disclosedbythe sets
+includedinthe abstract andprovidedbyclient. The examinationis limitedtothe timeframe requestedbyclient. Client shall defend,
+holdharmless andindemnifyabstractorforanysearches outside ofthe records andParishspecifiedabove. Idoherebycertifythat the
+followingcopies are all the instruments affectingthe title tothe above captionedproperty,as accuratelydisclosedbythe indices to
+saidRecords. This abstract is not intendedtoreflect,nordoes it infact reflect,the current mineral ownershipofthe subject property.
+Novariations ofthe listednames have beensearchedunless otherwise specified. We didnot researchbonds. We donot warrant the
+authenticityofthe sets,nordowe warrant the validityofthe sets ofcancellations andreleases. We donot certifytothe tax
+informationunless a taxcertificate is attached. Statewide UCC andBankruptcyPacersearches are separatelyrequestedservices and
+are not searchedunless expresslyrequestedbyclient inorder.
+---------------------------------------------------------------------------------
+NAMESSEARCHED:
+AllenDorsey
+SaraDorsey
+CraigJudeMiller
+AlisonFrederickMiller
+JacobPaulCornner
+LeonaChampagneBroussard
+LolaChampagneRomero
+FrancisChampagne
+AudrestChampagne
+LillianBroussardChampagne
+---------------------------------------------------------------------------------
+DOCUMENTSATTACHED:
+#236450CashDeed; Filed: 08/25/1976
+#8809488Renunciation; Filed: 10/12/1988
+#20713825Act ofDonation; Filed: 11/07/2007
+#2012001188CashSale; Filed: 02/08/2012
+#2018007366CashSale; Filed: 09/18/2018
+#2020003004CashSale; Filed: 05/05/2020
+--------------------------------------------------------------------------------
+ENCUMBRANCES:
+#2020003005Mortgage; Filed: 05/05/2020
+#5852Assignment; Filed: 08/29/2025
+--------------------------------------------------------------------------------
+TAXINFORMATION:2024Assessment#RE045530–TaxesPaidAnnually
+*See printout attachedfortaxinformation
+_____________________________________________________
+BRADLEYABSTRACT,LLC
+
+Parcel: RE045530 ID: 35328
+Vermilion Parish Report
+Tax Year 2025
+(Uncertified)
+Property Owner
+Name: DORSEY, ALLEN & DORSEY, SARA
+Mailing Address:307 S SEVERIN
+ERATH, LA 70533
+Type: (RI) Res. Improv.
+Tax District: (E101) ERA - RD52 - DG1 - TPP
+Millage Rate: 96.47
+Homestead Pct: 100.00
+Special Assessment
+Freeze:No
+Property Information
+Physical Address: 307   S SEVERIN   ,   
+Subdivision: ERATH TOWN PLAT
+Block/Lot: N/A / 040
+S-T-R: N/A
+Size (Acres):
+Restoration Tax
+Abatement:No
+Homestead Code: P
+Legal: See Extended Legal
+Extended Legal
+LOT 40, S 33' OF 41, S 7' OF LOT 42 & 43 TOWN PLAT        2018007366      IMP
+Assessment Summary:
+Description Acres Land Value Bldg Value Total Value Land Assessed Bldg Assessed Total Assessed Percent
+RESIDENTIAL SUB. LOT (REC. PLAT) 2.000 11,000.00 0.00 11,000.00 1,100.00 0.00 1,100.00 10.00
+SINGLE FAMILY RES 0.00 91,732.00 91,732.00 0.00 9,173.00 9,173.00 10.00
+Totals 11,000.00 91,732.00 102,732.00 1,100.00 9,173.00 10,273.00
+Homestead Credit:  696.53       Status:  (AC) Active     Note:  Tax amounts are estimates only. Contact the county/parish tax collector for
+exact amounts.
+
+Not a Legal Document
+Subject to terms and conditions
+www.actDataScout.comSpecial Assessments:
+Assessment Millage Parish or City Total Tax Homestead Credit Tax Amount
+Assessment District 2.52 P $25.89 $18.90 $6.99
+Consolidated Schools 10M 9.64 P $99.03 $72.30 $26.73
+Consolidated Schools 25M 24.09 P $247.48 $180.68 $66.80
+Erath General Fund 3.60 C $36.98 $0.00 $9.98
+Gravity DD #1 15.86 P $162.93 $118.95 $43.98
+Health Unit 2.62 P $26.92 $19.65 $7.27
+Law Enforcement 9.52 P $97.80 $71.40 $26.40
+Library Maint 4.46 P $45.82 $33.45 $12.37
+Parish Road Maint 3.26 P $33.49 $24.45 $9.04
+Parish School 4.54 P $46.64 $34.05 $12.59
+Parishwide (EX A&K) 4.14 P $42.53 $31.05 $11.48
+Road Dist 5-2 5.80 P $59.58 $43.50 $16.08
+T-V-F-W District 1.42 P $14.59 $10.65 $3.94
+Twin Parish Port 1M 1.00 P $10.27 $7.50 $2.77
+Twin Parish Port 4M 4.00 P $41.09 $30.00 $11.09
+Totals 96.47 $991.04 $696.53 $267.51
+Note:  Tax amounts are estimates only. Due to rounding errors, please contact the Parish for the exact taxes owed.
+Homestead Credit:  696.53     Status:  (AC) Active    
+Deed Transfers
+Date Book Page Deed Type Est. Sale Grantee Instr. #
+5/1/2020 Land & Imp $157,000 MILLER, CRAIG JUDE 2020003004
+9/18/2018 Cash Sale $25,000 CORNNER, JACOB PAUL 2018007366
+2/1/2012 Land & Imp $18,000 CHAMPAGNE, AUDREST ETAL #RE042000 20121188
+11/1/2007 Donation $0 CHAMPAGNE, AUDREST #RE042000 200713825
+Parcel Owner Information:
+Name Percent of Ownership Ownership Began Ownership Ended
+DORSEY, ALLEN 50.00%
+DORSEY, SARA 50.00%
+
+Vermilion Parish - Tax Notice Inquiry
+10/15/2025 8:56:05 AM
+Tax Notice#  RE045530
+Tax Year 2024
+Taxpayer
+DORSEY , ALLEN &
+DORSEY , SARA
+*** S SEVERIN
+ERATH LA  *****
+Legal
+LOT 40, S 33' OF 41, S 7' OF LOT  42 & 43 TOWN PLA T
+2018007366 IMP
+Parcels
+Parcel# Address % Tax
+RE045530 307 S SEVERIN 100.0000
+History
+Date Description Amount
+11/7/2024 ORIGINAL  TAXES 257.75
+12/26/2024 PAYMENT -257.75
+Items
+Class Value Units Homestead
+RESIDENTIAL  SUBDIVISION
+LOT1,100 2.00 803Taxes
+257.75Interest
+0.00Cost
+0.00Other
+0.00Paid
+257.75Balance
+0.00
+
+Class Value Units Homestead
+SINGLE F AMIL Y
+RESIDENCE9,173 1.00 6,697
+
+COB: 236450; Page: 1; Filed: 8/25/1976 12:00:00AM  [vermilion: ]
+
+COB: 8809488; Page: 1; Filed: 10/12/1988 12:00:00AM  [vermilion: ]
+
+COB: 20713825; Page: 1; Filed: 11/7/2007 12:00:00AM  [vermilion: ]
+
+COB: 20713825; Page: 2; Filed: 11/7/2007 12:00:00AM  [vermilion: ]
+
+COB: 20713825; Page: 3; Filed: 11/7/2007 12:00:00AM  [vermilion: ]
+
+COB: 2012001188; Page: 1; Filed: 2/8/2012 12:00:00AM  [vermilion: ]
+
+COB: 2012001188; Page: 2; Filed: 2/8/2012 12:00:00AM  [vermilion: ]
+
+COB: 2018007366; Page: 1; Filed: 9/18/2018 12:00:00AM  [vermilion: ]
+
+COB: 2018007366; Page: 2; Filed: 9/18/2018 12:00:00AM  [vermilion: ]
+
+COB: 2018007366; Page: 3; Filed: 9/18/2018 12:00:00AM  [vermilion: ]
+
+COB: 2020003004; Page: 1; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+COB: 2020003004; Page: 2; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 1; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 2; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 3; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 4; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 5; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 6; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 7; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 8; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 9; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 10; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 11; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 12; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 13; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 14; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 2020003005; Page: 15; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+MOB: 5852; Page: 1; Filed: 8/29/2025 10:49:49AM  [vermilion: NB]
+
+MOB: 5852; Page: 2; Filed: 8/29/2025 10:49:49AM  [vermilion: NB]
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+PAGE-BY-PAGE BREAKDOWN:
+----------------------------------------------------------------------
+
+--- Page 1 (2312 chars) ---
+Title Order Sheet :-
+Mortgage Connect of Louisiana, LLC
+333 TEXAS ST
+SUITE 1349
+SHREVEPORT LA , 71101
+Email: fcltitle@MortgageConnectLP.com
+Order Number :
+Order Date :
+Abstractor:
+Abstractor Fee :Vendor ID : 
+Vendor Fax : 44365
+$ 150.0010/13/2025
+Please confirm receipt of this order with your  
+within 24 hours of the receipt of this order .
+>>>    CONTACT Mortgage Connect of Louisiana , LLC IMMEDIATELY IF UNABLE TO ACCEPT THIS ASSIGNMENT     <<<3723626-1 Order Type :PFCF-Pre-Foreclosure Report F...
+
+--- Page 2 (532 chars) ---
+INVOICE
+BRADLEY ABSTRACT, LLC
+300 Rue Beauregard
+Ste C
+Lafayette, LA 70508michelle@bradleyabstractors.com
++1 (337) 234-7470
+MORTGAGE CONNECT
+Bill to
+Jean Depietro
+Invoice details
+Invoice no.: 25-776
+Terms: Net 30
+Invoice date: 10/15/2025
+Due date: 11/14/2025Name: Dorsey, Allen
+File #: 3723626-1
+Type: FULL
+#Date Product or service Description Qty Rate Amount
+1.10/15/2025 Abstracting fees Abstracting fees 1 $150.00 $150.00
+2.10/15/2025 COPIES 1 $30.00 $30.00
+Ways to pay
+View and paySubtotal $180.0...
+
+--- Page 3 (2557 chars) ---
+P.O.BOX 52521
+Lafayette,Louisiana 70505
+(337)234-7470
+fax: (337)234-7495
+website: www.bradleyabstractors.com
+MORTGAGEANDCONVEYANCECERTIFICATE
+FOR: MortgageConnect FILE#: 3723626-1
+PROPERTYDESCRIPTION:LOT40,S33'OF41,S7'OFLOT42&43Townof
+Erath,VermilionParish,LA(307S.SeverinStreet,Erath,LA)
+PERIODOFSEARCH:August25,1976toOctober10,2025
+PRESENTOWNER(S):AllenandSaraDorsey
+This is not a Title Opinion. Ihave made a careful examinationofthe MORTGAGE andCONVEYANCE records inthe
+office ofthe ClerkandRecord...
+
+--- Page 4 (1125 chars) ---
+Parcel: RE045530 ID: 35328
+Vermilion Parish Report
+Tax Year 2025
+(Uncertified)
+Property Owner
+Name: DORSEY, ALLEN & DORSEY, SARA
+Mailing Address:307 S SEVERIN
+ERATH, LA 70533
+Type: (RI) Res. Improv.
+Tax District: (E101) ERA - RD52 - DG1 - TPP
+Millage Rate: 96.47
+Homestead Pct: 100.00
+Special Assessment
+Freeze:No
+Property Information
+Physical Address: 307   S SEVERIN   ,   
+Subdivision: ERATH TOWN PLAT
+Block/Lot: N/A / 040
+S-T-R: N/A
+Size (Acres):
+Restoration Tax
+Abatement:No
+Homestead Code: P
+Le...
+
+--- Page 5 (1500 chars) ---
+Not a Legal Document
+Subject to terms and conditions
+www.actDataScout.comSpecial Assessments:
+Assessment Millage Parish or City Total Tax Homestead Credit Tax Amount
+Assessment District 2.52 P $25.89 $18.90 $6.99
+Consolidated Schools 10M 9.64 P $99.03 $72.30 $26.73
+Consolidated Schools 25M 24.09 P $247.48 $180.68 $66.80
+Erath General Fund 3.60 C $36.98 $0.00 $9.98
+Gravity DD #1 15.86 P $162.93 $118.95 $43.98
+Health Unit 2.62 P $26.92 $19.65 $7.27
+Law Enforcement 9.52 P $97.80 $71.40 $26.40
+Libra...
+
+--- Page 6 (537 chars) ---
+Vermilion Parish - Tax Notice Inquiry
+10/15/2025 8:56:05 AM
+Tax Notice#  RE045530
+Tax Year 2024
+Taxpayer
+DORSEY , ALLEN &
+DORSEY , SARA
+*** S SEVERIN
+ERATH LA  *****
+Legal
+LOT 40, S 33' OF 41, S 7' OF LOT  42 & 43 TOWN PLA T
+2018007366 IMP
+Parcels
+Parcel# Address % Tax
+RE045530 307 S SEVERIN 100.0000
+History
+Date Description Amount
+11/7/2024 ORIGINAL  TAXES 257.75
+12/26/2024 PAYMENT -257.75
+Items
+Class Value Units Homestead
+RESIDENTIAL  SUBDIVISION
+LOT1,100 2.00 803Taxes
+257.75Interest
+0.00Cost
+...
+
+--- Page 7 (69 chars) ---
+Class Value Units Homestead
+SINGLE F AMIL Y
+RESIDENCE9,173 1.00 6,697
+
+--- Page 8 (64 chars) ---
+COB: 236450; Page: 1; Filed: 8/25/1976 12:00:00AM  [vermilion: ]
+
+--- Page 9 (66 chars) ---
+COB: 8809488; Page: 1; Filed: 10/12/1988 12:00:00AM  [vermilion: ]
+
+--- Page 10 (66 chars) ---
+COB: 20713825; Page: 1; Filed: 11/7/2007 12:00:00AM  [vermilion: ]
+
+--- Page 11 (66 chars) ---
+COB: 20713825; Page: 2; Filed: 11/7/2007 12:00:00AM  [vermilion: ]
+
+--- Page 12 (66 chars) ---
+COB: 20713825; Page: 3; Filed: 11/7/2007 12:00:00AM  [vermilion: ]
+
+--- Page 13 (67 chars) ---
+COB: 2012001188; Page: 1; Filed: 2/8/2012 12:00:00AM  [vermilion: ]
+
+--- Page 14 (67 chars) ---
+COB: 2012001188; Page: 2; Filed: 2/8/2012 12:00:00AM  [vermilion: ]
+
+--- Page 15 (68 chars) ---
+COB: 2018007366; Page: 1; Filed: 9/18/2018 12:00:00AM  [vermilion: ]
+
+--- Page 16 (68 chars) ---
+COB: 2018007366; Page: 2; Filed: 9/18/2018 12:00:00AM  [vermilion: ]
+
+--- Page 17 (68 chars) ---
+COB: 2018007366; Page: 3; Filed: 9/18/2018 12:00:00AM  [vermilion: ]
+
+--- Page 18 (67 chars) ---
+COB: 2020003004; Page: 1; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 19 (67 chars) ---
+COB: 2020003004; Page: 2; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 20 (67 chars) ---
+MOB: 2020003005; Page: 1; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 21 (67 chars) ---
+MOB: 2020003005; Page: 2; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 22 (67 chars) ---
+MOB: 2020003005; Page: 3; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 23 (67 chars) ---
+MOB: 2020003005; Page: 4; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 24 (67 chars) ---
+MOB: 2020003005; Page: 5; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 25 (67 chars) ---
+MOB: 2020003005; Page: 6; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 26 (67 chars) ---
+MOB: 2020003005; Page: 7; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 27 (67 chars) ---
+MOB: 2020003005; Page: 8; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 28 (67 chars) ---
+MOB: 2020003005; Page: 9; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 29 (68 chars) ---
+MOB: 2020003005; Page: 10; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 30 (68 chars) ---
+MOB: 2020003005; Page: 11; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 31 (68 chars) ---
+MOB: 2020003005; Page: 12; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 32 (68 chars) ---
+MOB: 2020003005; Page: 13; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 33 (68 chars) ---
+MOB: 2020003005; Page: 14; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 34 (68 chars) ---
+MOB: 2020003005; Page: 15; Filed: 5/5/2020 12:00:00AM  [vermilion: ]
+
+--- Page 35 (64 chars) ---
+MOB: 5852; Page: 1; Filed: 8/29/2025 10:49:49AM  [vermilion: NB]
+
+--- Page 36 (64 chars) ---
+MOB: 5852; Page: 2; Filed: 8/29/2025 10:49:49AM  [vermilion: NB]
+
+----------------------------------------------------------------------
+CHARACTER ANALYSIS:
+----------------------------------------------------------------------
+Alphabetic characters: 6062
+Numeric characters: 1746
+Whitespace characters: 1537
+Special characters: 1296
+
+Total words: 1364
+Unique words: 747
+Sample words: Title, Order, Sheet, :-, Mortgage, Connect, of, Louisiana,, LLC, 333, TEXAS, ST, SUITE, 1349, SHREVEPORT, LA, ,, 71101, Email:, fcltitle@MortgageConnectLP.com

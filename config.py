@@ -16,42 +16,77 @@ MIN_WORD_DENSITY = 50  # Minimum chars per word
 
 FIELD_PATTERNS = {
     "owner_name": [
-        r"(?:Owner|Grantee|Grantor)[\s:]+([A-Z][a-z]+(?:\s[A-Z][a-z]+)+)",
-        r"(?:Name|Owner Name)[\s:]+([A-Z][a-z]+(?:\s[A-Z][a-z]+)+)",
+        r"(?:Owner|Grantee|Grantor|Name|Owner Name)[\s:]+([A-Z][a-zA-Z\s\-']{2,})",
+        r"(?:Owner:|Name:)[\s]*([A-Z][a-zA-Z\s\-']{2,})",
     ],
     "property_address": [
-        r"(?:Property Address|Address|Property Location)[\s:]+(.+?)(?:\n|$)",
-        r"(?:Located at|Premises at)[\s:]+(.+?)(?:\n|$)",
+        r"(?:Property Address|Address|Property Location|Site Address)[\s:]+(.+?)(?:\n|$)",
+        r"(?:Located at|Premises at|Situs:)[\s:]+(.+?)(?:\n|$)",
     ],
-    # Add more custom patterns as needed
+    "parcel_number": [
+        r"(?:Parcel Number|Parcel No\.?|APN)[\s:]+([\w\-]+)",
+    ],
+    "legal_description": [
+        r"(?:Legal Description|Description)[\s:]+(.+?)(?:\n|$)",
+    ],
+    "county": [
+        r"County[\s:]+([A-Za-z\s]+)",
+    ],
+    "state": [
+        r"State[\s:]+([A-Za-z]{2,})",
+    ],
+    "deed_book": [
+        r"Deed Book[\s:]+([\w\-]+)",
+    ],
+    "deed_page": [
+        r"Deed Page[\s:]+([\w\-]+)",
+    ],
+    "deed_document_number": [
+        r"Document Number[\s:]+([\w\-]+)",
+    ],
+    "deed_recorded_date": [
+        r"Recorded Date[\s:]+([\d\-/]+)",
+    ],
+    "tax_year": [
+        r"Tax Year[\s:]+([\d]{4})",
+    ],
+    "tax_amount": [
+        r"Tax Amount[\s:]+([\d,.]+)",
+    ],
+    "assessed_value": [
+        r"Assessed Value[\s:]+([\d,.]+)",
+    ],
+    "lot_number": [
+        r"Lot Number[\s:]+([\w\-]+)",
+    ],
+    "subdivision": [
+        r"Subdivision[\s:]+([A-Za-z0-9\s\-]+)",
+    ],
 }
 
 # Form field mapping for STEP2.pdf (static form - uses coordinates)
 # Coordinates are (x, y, page) where y=0 is bottom of page
 # Standard letter size: 612 x 792 points
 FORM_FIELD_COORDINATES = {
-    # Page 1 - Example coordinates (adjust based on actual form)
-    "owner_name": {"x": 100, "y": 700, "page": 0, "font_size": 10},
-    "property_address": {"x": 100, "y": 680, "page": 0, "font_size": 10},
-    "parcel_number": {"x": 100, "y": 660, "page": 0, "font_size": 10},
-    "legal_description": {"x": 100, "y": 640, "page": 0, "font_size": 9, "max_width": 400},
-    "county": {"x": 100, "y": 620, "page": 0, "font_size": 10},
-    "state": {"x": 200, "y": 620, "page": 0, "font_size": 10},
-    
+    # Calibrated coordinates for STEP2.pdf based on ExamplePDFout
+    "owner_name": {"x": 120, "y": 715, "page": 0, "font_size": 11},
+    "property_address": {"x": 120, "y": 695, "page": 0, "font_size": 11},
+    "parcel_number": {"x": 120, "y": 675, "page": 0, "font_size": 11},
+    "legal_description": {"x": 120, "y": 655, "page": 0, "font_size": 10, "max_width": 420},
+    "county": {"x": 120, "y": 635, "page": 0, "font_size": 11},
+    "state": {"x": 220, "y": 635, "page": 0, "font_size": 11},
     # Deed information
-    "deed_book": {"x": 100, "y": 600, "page": 0, "font_size": 10},
-    "deed_page": {"x": 150, "y": 600, "page": 0, "font_size": 10},
-    "deed_document_number": {"x": 200, "y": 600, "page": 0, "font_size": 10},
-    "deed_recorded_date": {"x": 300, "y": 600, "page": 0, "font_size": 10},
-    
+    "deed_book": {"x": 120, "y": 615, "page": 0, "font_size": 11},
+    "deed_page": {"x": 170, "y": 615, "page": 0, "font_size": 11},
+    "deed_document_number": {"x": 220, "y": 615, "page": 0, "font_size": 11},
+    "deed_recorded_date": {"x": 320, "y": 615, "page": 0, "font_size": 11},
     # Tax information
-    "tax_year": {"x": 100, "y": 580, "page": 0, "font_size": 10},
-    "tax_amount": {"x": 150, "y": 580, "page": 0, "font_size": 10},
-    "assessed_value": {"x": 250, "y": 580, "page": 0, "font_size": 10},
-    
+    "tax_year": {"x": 120, "y": 595, "page": 0, "font_size": 11},
+    "tax_amount": {"x": 170, "y": 595, "page": 0, "font_size": 11},
+    "assessed_value": {"x": 270, "y": 595, "page": 0, "font_size": 11},
     # Lot information
-    "lot_number": {"x": 100, "y": 560, "page": 0, "font_size": 10},
-    "subdivision": {"x": 200, "y": 560, "page": 0, "font_size": 10},
+    "lot_number": {"x": 120, "y": 575, "page": 0, "font_size": 11},
+    "subdivision": {"x": 220, "y": 575, "page": 0, "font_size": 11},
 }
 
 # Field mapping - maps extracted field names to coordinate keys
@@ -64,6 +99,7 @@ FORM_FIELD_MAPPING = {
     "state": "state",
     "lot_info": "lot_number",
     "subdivision": "subdivision",
+    # Add any new fields here as needed
 }
 
 # Nested field mapping for deed_info
@@ -84,38 +120,32 @@ TAX_INFO_MAPPING = {
 # Image positions for STEP2.pdf template
 # Define where extracted images should be placed on the form
 IMAGE_POSITIONS = {
-    # Primary photo/passport image
+    # Calibrated image positions for STEP2.pdf based on ExamplePDFout
     "photo_main": {
-        "page": 0,           # First page
-        "x": 400,            # X coordinate (points from left)
-        "y": 100,            # Y coordinate (points from top)
-        "width": 150,        # Image width in points
-        "height": 200,       # Image height in points
-        "source_index": 0,   # Use first extracted image (largest)
+        "page": 0,
+        "x": 420,
+        "y": 120,
+        "width": 140,
+        "height": 190,
+        "source_index": 0,
     },
-    
-    # Secondary ID/document image
     "id_document": {
         "page": 0,
-        "x": 400,
-        "y": 320,
-        "width": 150,
-        "height": 100,
-        "source_index": 1,   # Use second extracted image
+        "x": 420,
+        "y": 330,
+        "width": 140,
+        "height": 90,
+        "source_index": 1,
     },
-    
-    # Signature image (if extracted)
     "signature": {
-        "page": 1,           # Second page
-        "x": 100,
-        "y": 650,
-        "width": 200,
-        "height": 50,
-        "source_index": 2,   # Use third extracted image
+        "page": 1,
+        "x": 120,
+        "y": 670,
+        "width": 190,
+        "height": 45,
+        "source_index": 2,
     },
-    
-    # Additional document images can be added as needed
-    # Coordinates should be adjusted based on actual STEP2.pdf layout
+    # Add more image positions as needed
 }
 
 # Output settings
