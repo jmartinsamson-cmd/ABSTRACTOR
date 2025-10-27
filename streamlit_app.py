@@ -10,10 +10,10 @@ import PyPDF2
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
-from cover_page_generator import BradleyAbstractCoverPage
-from parser import PDFParser
-from field_extractor import FieldExtractor
-from pdf_assembler import PDFAssembler
+from src.cover_page_generator import BradleyAbstractCoverPage
+from src.parser import PDFParser
+from src.field_extractor import FieldExtractor
+from src.pdf_assembler import PDFAssembler
 
 st.set_page_config(page_title="Abstractor - Property Abstract Generator", layout="wide", page_icon="🏛️")
 

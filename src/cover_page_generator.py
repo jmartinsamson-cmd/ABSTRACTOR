@@ -16,7 +16,7 @@ except ImportError:
     DEPENDENCIES_AVAILABLE = False
 
 
-class CoverPageGenerator:
+class BradleyAbstractCoverPage:
     """Generate and fill Bradley Abstract cover pages"""
     
     # Field coordinates (x, y) for form filling - based on letter size (8.5 x 11)
