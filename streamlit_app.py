@@ -3,6 +3,9 @@ from pathlib import Path
 import sys
 import tempfile
 import json
+from datetime import datetime
+import io
+import PyPDF2
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))
@@ -10,46 +13,64 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 from cover_page_generator import BradleyAbstractCoverPage
 from parser import PDFParser
 from field_extractor import FieldExtractor
+from pdf_assembler import PDFAssembler
 
-st.set_page_config(page_title="Abstractor - Smart Cover Page", layout="wide", page_icon="🏛️")
+st.set_page_config(page_title="Abstractor - Property Abstract Generator", layout="wide", page_icon="🏛️")
 
 # Initialize session state
 if 'extracted_data' not in st.session_state:
     st.session_state.extracted_data = {}
 if 'pdf_processed' not in st.session_state:
     st.session_state.pdf_processed = False
+if 'uploaded_pdfs' not in st.session_state:
+    st.session_state.uploaded_pdfs = []
 
-st.title("🏛️ Bradley Abstract - Smart Cover Page Generator")
-st.markdown("**Upload a PDF → Auto-extract data → Edit inline → Generate cover page**")
+st.title("🏛️ Bradley Abstract - Property Abstract Generator")
+st.markdown("**Upload client PDFs → Auto-extract data → Edit inline → Generate complete abstract**")
 
 # Sidebar
 with st.sidebar:
-    st.markdown("### 📤 Upload Document")
-    uploaded_file = st.file_uploader(
-        "Choose PDF to extract data from",
+    st.markdown("### 📤 Upload Client Documents")
+    uploaded_files = st.file_uploader(
+        "Choose PDF(s) for this client",
         type=['pdf'],
-        help="Upload a property document to automatically extract information"
+        help="Upload all property documents for this client (e.g., deed + title search)",
+        accept_multiple_files=True
     )
     
     st.markdown("---")
     
     use_ocr = st.checkbox("Enable OCR (for scanned PDFs)", value=False)
     
-    if uploaded_file:
-        if st.button("🔍 Extract Data from PDF", type="primary", use_container_width=True):
-            with st.spinner("Extracting data from PDF..."):
+    if uploaded_files and len(uploaded_files) > 0:
+        if st.button("🔍 Extract Data from PDFs", type="primary", use_container_width=True):
+            with st.spinner("Extracting data from all PDFs..."):
                 try:
-                    # Save uploaded file temporarily
-                    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_file:
-                        tmp_file.write(uploaded_file.read())
-                        tmp_path = tmp_file.name
+                    # Save uploaded files
+                    st.session_state.uploaded_pdfs = []
+                    all_text = ""
                     
-                    # Parse PDF
-                    parser = PDFParser(tmp_path, use_ocr=use_ocr)
-                    text = parser.extract_text()
+                    for uploaded_file in uploaded_files:
+                        # Save temporarily
+                        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_file:
+                            file_bytes = uploaded_file.read()
+                            tmp_file.write(file_bytes)
+                            tmp_path = tmp_file.name
+                        
+                        # Store file info
+                        st.session_state.uploaded_pdfs.append({
+                            'name': uploaded_file.name,
+                            'bytes': file_bytes,
+                            'temp_path': tmp_path
+                        })
+                        
+                        # Parse PDF
+                        parser = PDFParser(tmp_path, use_ocr=use_ocr)
+                        text = parser.extract_text()
+                        all_text += f"\n\n=== {uploaded_file.name} ===\n{text}"
                     
-                    # Extract fields
-                    extractor = FieldExtractor(text)
+                    # Extract fields from combined text
+                    extractor = FieldExtractor(all_text)
                     fields = extractor.extract_all_fields()
                     
                     # Store in session state
@@ -190,59 +211,90 @@ if st.session_state.pdf_processed or st.session_state.extracted_data:
                         
                         # Generate cover page
                         generator = BradleyAbstractCoverPage()
-                        output_path = Path("output") / f"cover_page_{file_number.replace('/', '_')}.pdf"
-                        output_path.parent.mkdir(exist_ok=True)
+                        cover_page_buffer = io.BytesIO()
                         
-                        success = generator.generate_cover_page(data, str(output_path))
+                        # Create temp file for cover page
+                        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_cover:
+                            tmp_cover_path = tmp_cover.name
                         
-                        if success:
-                            st.success(f"✅ Cover page generated successfully!")
+                        success = generator.generate_cover_page(data, tmp_cover_path)
+                        
+                        if not success:
+                            st.error("❌ Failed to generate cover page.")
+                        else:
+                            # Read cover page bytes
+                            with open(tmp_cover_path, 'rb') as f:
+                                cover_page_bytes = f.read()
+                            
+                            # Assemble complete PDF: cover page + all source documents
+                            assembler = PDFAssembler()
+                            
+                            # Get source document paths/bytes
+                            source_docs = [pdf_info['bytes'] for pdf_info in st.session_state.uploaded_pdfs]
+                            
+                            # Assemble: cover page as "billing" (page 1), no bradley form (already in cover), all source docs
+                            complete_pdf_bytes = assembler.assemble_abstract(
+                                billing_pdf_bytes=cover_page_bytes,
+                                bradley_form_bytes=None,  # Cover page already contains the form
+                                scanned_documents=source_docs,
+                                output_path=None
+                            )
+                            
+                            # Save to output folder
+                            output_path = Path("output") / f"complete_abstract_{file_number.replace('/', '_')}.pdf"
+                            output_path.parent.mkdir(exist_ok=True)
+                            
+                            with open(output_path, 'wb') as f:
+                                f.write(complete_pdf_bytes)
+                            
+                            st.success(f"✅ Complete property abstract generated successfully!")
                             
                             # Provide download button
-                            with open(output_path, "rb") as pdf_file:
-                                st.download_button(
-                                    label="📥 Download Cover Page PDF",
-                                    data=pdf_file,
-                                    file_name=f"bradley_abstract_cover_{file_number.replace('/', '_')}.pdf",
-                                    mime="application/pdf",
-                                    use_container_width=True
-                                )
+                            st.download_button(
+                                label="📥 Download Complete Property Abstract PDF",
+                                data=complete_pdf_bytes,
+                                file_name=f"bradley_abstract_{file_number.replace('/', '_')}.pdf",
+                                mime="application/pdf",
+                                use_container_width=True
+                            )
                             
                             st.info(f"📁 Saved to: `{output_path}`")
-                        else:
-                            st.error("❌ Failed to generate cover page.")
+                            
+                            # Show page count
+                            pdf_reader = PyPDF2.PdfReader(io.BytesIO(complete_pdf_bytes))
+                            st.info(f"📄 Total pages: {len(pdf_reader.pages)} (1 cover page + {len(pdf_reader.pages)-1} document pages)")
                             
                     except Exception as e:
                         st.error(f"❌ Error: {str(e)}")
                         st.exception(e)
 
 else:
-    # Welcome screen when no PDF is uploaded
+    # Welcome screen when no PDFs uploaded
     st.markdown("---")
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown("""
         ### 🚀 Get Started
         
-        **Step 1:** Upload a property document PDF using the sidebar
+        **Step 1:** Upload client property document PDF(s) using the sidebar
         
-        **Step 2:** Click "Extract Data from PDF" to automatically extract information
+        **Step 2:** Click "Extract Data from PDFs" to automatically extract information
         
         **Step 3:** Review and edit the extracted fields
         
-        **Step 4:** Generate your professional cover page
+        **Step 4:** Generate your complete property abstract
         
         ---
         
         #### ✨ Features
-        - 🤖 **Smart extraction** - Automatically pulls data from your PDFs
+        - 🤖 **Smart extraction** - Automatically pulls data from multiple PDFs
         - ✏️ **Inline editing** - Fix any mistakes or add missing information
-        - 📄 **Professional output** - Generate Bradley Abstract branded cover pages
+        - 📄 **Complete assembly** - Cover page + all source documents in one PDF
         - 🔍 **OCR support** - Works with scanned documents too
         
         ---
         
-        *Upload a document to begin →*
+        *Upload document(s) to begin →*
         """)
     
     # Show example data option

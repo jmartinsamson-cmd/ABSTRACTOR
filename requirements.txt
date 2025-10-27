@@ -1,11 +1,9 @@
 streamlit
-PyMuPDF
-reportlab
-Pillow
+PyMuPDF>=1.23.0
+reportlab>=3.6.0
+Pillow>=9.1
 pdfplumber
 pytesseract
 pdf2image
 python-dotenv
-PyMuPDF>=1.23.0
-reportlab>=3.6.0
-Pillow>=9.1
+PyPDF2
