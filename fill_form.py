@@ -43,12 +43,35 @@ def main():
         data = json.load(f)
     
     # Get extracted fields
-    extracted_fields = data.get('extracted_fields', {})
-    
-    if not extracted_fields:
-        print(f"Warning: No extracted fields found in {args.input}")
-        if args.verbose:
-            print(f"Data keys: {list(data.keys())}")
+        # Accept both flat and nested JSONs
+        extracted_fields = data.get('extracted_fields', {})
+        if not extracted_fields:
+            # Try to flatten top-level fields using config mappings
+            import config
+            extracted_fields = {}
+            # Top-level direct mappings
+            for k, v in data.items():
+                if k in config.FORM_FIELD_MAPPING:
+                    extracted_fields[config.FORM_FIELD_MAPPING[k]] = v
+            # Nested deed_info
+            if 'deed_info' in data:
+                for k, v in data['deed_info'].items():
+                    if k in config.DEED_INFO_MAPPING:
+                        extracted_fields[config.DEED_INFO_MAPPING[k]] = v
+            # Nested tax_info
+            if 'tax_info' in data:
+                for k, v in data['tax_info'].items():
+                    if k in config.TAX_INFO_MAPPING:
+                        extracted_fields[config.TAX_INFO_MAPPING[k]] = v
+            # Additional fields
+            if 'additional_fields' in data:
+                for k, v in data['additional_fields'].items():
+                    extracted_fields[k] = v
+            if args.verbose:
+                print(f"Flattened extracted fields: {extracted_fields}")
+            if not extracted_fields:
+                print(f"Warning: No extracted fields found in {args.input}")
+                print(f"Data keys: {list(data.keys())}")
     
     # Determine output path
     if args.output:

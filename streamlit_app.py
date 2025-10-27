@@ -7,6 +7,7 @@ import os
 from src.parser import PDFParser
 from src.field_extractor import FieldExtractor
 from src.form_filler import FormFiller
+import streamlit.components.v1 as components
 # Add current directory to path for module imports
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
@@ -399,6 +400,10 @@ def main():
             import tempfile
             from src.form_filler import FormFiller
             template_path = "templates/STEP2.pdf"
+            st.write("### Debug: Merged Data for Final PDF")
+            st.json(all_edited_data)
+            st.write("### Debug: Merged Images for Final PDF")
+            st.write(all_images)
             with tempfile.TemporaryDirectory() as temp_dir:
                 output_file = Path(temp_dir) / "STEP2_final.pdf"
                 filler = FormFiller(template_path)
@@ -406,7 +411,7 @@ def main():
                     filler.fill_form(
                         all_edited_data,
                         str(output_file),
-                        verbose=False,
+                        verbose=True,
                         images=all_images
                     )
                     with open(output_file, "rb") as f:
@@ -417,22 +422,27 @@ def main():
                     output_path = output_dir / "STEP2_final.pdf"
                     with open(output_path, "wb") as f:
                         f.write(final_pdf_bytes)
+                    st.session_state.final_pdf_bytes = final_pdf_bytes
+                    st.session_state.final_pdf_path = str(output_path)
                     st.success(f"Finalized PDF saved to: {output_path}")
-                    # Download button
-                    st.download_button(
-                        label="⬇️ Download Final PDF",
-                        data=final_pdf_bytes,
-                        file_name="STEP2_final.pdf",
-                        mime="application/pdf",
-                        key="download_final_pdf_btn"
-                    )
-                    # Inline preview
-                    import base64
-                    b64_pdf = base64.b64encode(final_pdf_bytes).decode('utf-8')
-                    pdf_display = f'<iframe src="data:application/pdf;base64,{b64_pdf}" width="900" height="900" type="application/pdf"></iframe>'
-                    st.components.v1.html(pdf_display, height=900)
                 except Exception as e:
+                    import traceback
                     st.error(f"Error generating final PDF: {str(e)}")
+                    st.text(traceback.format_exc())
+
+        # Always show download button and preview if PDF exists in session state
+        if hasattr(st.session_state, "final_pdf_bytes") and st.session_state.final_pdf_bytes:
+            st.download_button(
+                label="⬇️ Download Final PDF",
+                data=st.session_state.final_pdf_bytes,
+                file_name="STEP2_final.pdf",
+                mime="application/pdf",
+                key="download_final_pdf_btn"
+            )
+            import base64
+            b64_pdf = base64.b64encode(st.session_state.final_pdf_bytes).decode('utf-8')
+            pdf_display = f'<iframe src="data:application/pdf;base64,{b64_pdf}" width="900" height="900" type="application/pdf"></iframe>'
+            components.html(pdf_display, height=900)
 
             st.markdown("---")
             st.subheader("⬆️ Upload Edited PDF to Save")
@@ -494,7 +504,7 @@ def main():
                     with open(output_dir / most_recent_pdf, "rb") as f:
                         b64_uploaded = base64.b64encode(f.read()).decode('utf-8')
                         pdf_display = f'<iframe src="data:application/pdf;base64,{b64_uploaded}" width="900" height="900" type="application/pdf"></iframe>'
-                        st.components.v1.html(pdf_display, height=900)
+                        components.html(pdf_display, height=900)
             else:
                 st.info("No edited PDFs found in output folder.")
 
@@ -511,7 +521,7 @@ def main():
                 # Optionally display the uploaded PDF inline
                 b64_uploaded = base64.b64encode(uploaded_edited_pdf.getbuffer()).decode('utf-8')
                 pdf_display = f'<iframe src="data:application/pdf;base64,{b64_uploaded}" width="900" height="900" type="application/pdf"></iframe>'
-                st.components.v1.html(pdf_display, height=900)
+                components.html(pdf_display, height=900)
     """Main Streamlit application"""
     
     # Header - horizontal layout with divider
@@ -716,7 +726,7 @@ def main():
             pdfjs_url = "https://mozilla.github.io/pdf.js/web/viewer.html"
             # Pass PDF as base64 data URI
             pdfjs_iframe = f'''<iframe src="{pdfjs_url}?file=data:application/pdf;base64,{b64_pdf}" width="900" height="900" allowfullscreen></iframe>'''
-            st.components.v1.html(pdfjs_iframe, height=900)
+            components.html(pdfjs_iframe, height=900)
         else:
             st.warning("No filled PDF available for editing.")
 
@@ -776,7 +786,7 @@ def main():
                         import base64
                         b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
                         pdf_display = f'<iframe src="data:application/pdf;base64,{b64_pdf}" width="700" height="900" type="application/pdf"></iframe>'
-                        st.components.v1.html(pdf_display, height=900)
+                        components.html(pdf_display, height=900)
                         output_dir = Path("output")
                         output_dir.mkdir(exist_ok=True)
                         output_path = output_dir / pdf_key

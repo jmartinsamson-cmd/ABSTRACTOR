@@ -94,44 +94,70 @@ FIELD_PATTERNS = {
 # Coordinates are (x, y, page) where y=0 is bottom of page
 # Standard letter size: 612 x 792 points
 FORM_FIELD_COORDINATES = {
-    # Calibrated coordinates for STEP2.pdf based on ExamplePDFout
+    # Owner(s)
     "owner_name": {"x": 120, "y": 715, "page": 0, "font_size": 11},
+    # Property address
     "property_address": {"x": 120, "y": 695, "page": 0, "font_size": 11},
+    # Parcel number
     "parcel_number": {"x": 120, "y": 675, "page": 0, "font_size": 11},
+    # Legal description
     "legal_description": {"x": 120, "y": 655, "page": 0, "font_size": 10, "max_width": 420},
-    "county": {"x": 120, "y": 635, "page": 0, "font_size": 11},
-    "state": {"x": 220, "y": 635, "page": 0, "font_size": 11},
-    # Deed information
-    "deed_book": {"x": 120, "y": 615, "page": 0, "font_size": 11},
-    "deed_page": {"x": 170, "y": 615, "page": 0, "font_size": 11},
-    "deed_document_number": {"x": 220, "y": 615, "page": 0, "font_size": 11},
-    "deed_recorded_date": {"x": 320, "y": 615, "page": 0, "font_size": 11},
-    # Tax information
+    # Deed info
+    "deed_book": {"x": 120, "y": 635, "page": 0, "font_size": 11},
+    "deed_page": {"x": 170, "y": 635, "page": 0, "font_size": 11},
+    "deed_recorded_date": {"x": 220, "y": 635, "page": 0, "font_size": 11},
+    "deed_type": {"x": 320, "y": 635, "page": 0, "font_size": 11},
+    "deed_parties": {"x": 120, "y": 615, "page": 0, "font_size": 11, "max_width": 420},
+    # Tax info
     "tax_year": {"x": 120, "y": 595, "page": 0, "font_size": 11},
-    "tax_amount": {"x": 170, "y": 595, "page": 0, "font_size": 11},
-    "assessed_value": {"x": 270, "y": 595, "page": 0, "font_size": 11},
-    # Lot information
-    "lot_number": {"x": 120, "y": 575, "page": 0, "font_size": 11},
-    "subdivision": {"x": 220, "y": 575, "page": 0, "font_size": 11},
+    "assessed_value": {"x": 170, "y": 595, "page": 0, "font_size": 11},
+    "tax_amount": {"x": 270, "y": 595, "page": 0, "font_size": 11},
+    "homestead": {"x": 370, "y": 595, "page": 0, "font_size": 11},
+    "millage": {"x": 470, "y": 595, "page": 0, "font_size": 11},
+    # Subdivision/block/lot
+    "subdivision": {"x": 120, "y": 575, "page": 0, "font_size": 11},
+    "block": {"x": 220, "y": 575, "page": 0, "font_size": 11},
+    "lot_number": {"x": 320, "y": 575, "page": 0, "font_size": 11},
+    # Supporting images (positions for each type)
+    "signature_img": {"x": 120, "y": 500, "page": 0, "width": 120, "height": 40, "source_index": 0},
+    "plat_img": {"x": 260, "y": 500, "page": 0, "width": 180, "height": 120, "source_index": 1},
+    "stamp_img": {"x": 460, "y": 500, "page": 0, "width": 80, "height": 40, "source_index": 2},
+    "seal_img": {"x": 560, "y": 500, "page": 0, "width": 80, "height": 40, "source_index": 3},
+    "attached_page_img": {"x": 120, "y": 400, "page": 1, "width": 400, "height": 600, "source_index": 4},
 }
 
 # Field mapping - maps extracted field names to coordinate keys
 FORM_FIELD_MAPPING = {
+    # Owner(s)
     "owner_name": "owner_name",
+    # Property address
     "property_address": "property_address",
+    # Parcel number
     "parcel_number": "parcel_number",
+    # Legal description
     "legal_description": "legal_description",
-    "county": "county",
-    "state": "state",
-    "lot_info": "lot_number",
+    # Deed info
+    "deed_book": "deed_book",
+    "deed_page": "deed_page",
+    "deed_recorded_date": "deed_recorded_date",
+    "deed_type": "deed_type",
+    "deed_parties": "deed_parties",
+    # Tax info
+    "tax_year": "tax_year",
+    "assessed_value": "assessed_value",
+    "tax_amount": "tax_amount",
+    "homestead": "homestead",
+    "millage": "millage",
+    # Subdivision/block/lot
     "subdivision": "subdivision",
-    "COB": "COB",
-    "MOB": "MOB",
-    "millage_rate": "millage_rate",
-    "homestead_pct": "homestead_pct",
-    "homestead_code": "homestead_code",
-    "homestead_credit": "homestead_credit",
-    "note": "note",
+    "block": "block",
+    "lot_info": "lot_number",
+    # Images
+    "signature_img": "signature_img",
+    "plat_img": "plat_img",
+    "stamp_img": "stamp_img",
+    "seal_img": "seal_img",
+    "attached_page_img": "attached_page_img",
     # Add any new fields here as needed
 }
 
@@ -153,22 +179,50 @@ TAX_INFO_MAPPING = {
 # Image positions for STEP2.pdf template
 # Define where extracted images should be placed on the form
 IMAGE_POSITIONS = {
-    # Calibrated image positions for STEP2.pdf based on ExamplePDFout
-    "photo_main": {
+    # Signatures
+    "signature_img": {
         "page": 0,
-        "x": 420,
-        "y": 120,
-        "width": 140,
-        "height": 190,
+        "x": 120,
+        "y": 500,
+        "width": 120,
+        "height": 40,
         "source_index": 0,
     },
-    "id_document": {
+    # Plats
+    "plat_img": {
         "page": 0,
-        "x": 420,
-        "y": 330,
-        "width": 140,
-        "height": 90,
+        "x": 260,
+        "y": 500,
+        "width": 180,
+        "height": 120,
         "source_index": 1,
+    },
+    # Stamps
+    "stamp_img": {
+        "page": 0,
+        "x": 460,
+        "y": 500,
+        "width": 80,
+        "height": 40,
+        "source_index": 2,
+    },
+    # Seals
+    "seal_img": {
+        "page": 0,
+        "x": 560,
+        "y": 500,
+        "width": 80,
+        "height": 40,
+        "source_index": 3,
+    },
+    # Attached legal pages
+    "attached_page_img": {
+        "page": 1,
+        "x": 120,
+        "y": 400,
+        "width": 400,
+        "height": 600,
+        "source_index": 4,
     },
     "signature": {
         "page": 1,
