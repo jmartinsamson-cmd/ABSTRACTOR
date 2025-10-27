@@ -1,25 +1,23 @@
-"""
-ABSTRACTOR - Web Application
-Streamlit-based web interface for PDF form processing
-Access from any browser - no installation required!
-"""
-
 import streamlit as st
 import json
 from pathlib import Path
 import tempfile
 import sys
 import os
-
+from src.parser import PDFParser
+from src.field_extractor import FieldExtractor
+from src.form_filler import FormFiller
 # Add current directory to path for module imports
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
-# Import core modules
-from src.parser import PDFParser
-from src.field_extractor import FieldExtractor
-from src.form_filler import FormFiller
 
+"""
+ABSTRACTOR - Web Application
+Streamlit-based web interface for PDF form processing
+Access from any browser - no installation required!
+"""
+sys.path.insert(0, current_dir)
 # Page configuration
 st.set_page_config(
     page_title="Abstractor - PDF Form Processor ✨",
@@ -349,7 +347,7 @@ def process_pdf(uploaded_file, use_ocr=True, template_path=None):
                             extracted_data, 
                             str(output_file),
                             verbose=False,
-                            images=images if images else None
+                            images=images
                         )
                         
                         # Read filled PDF into bytes
@@ -357,7 +355,7 @@ def process_pdf(uploaded_file, use_ocr=True, template_path=None):
                             filled_pdf_bytes = f.read()
                         
                         result['filled_form'] = True
-                        st.success(f"✅ Form filled successfully!")
+                        st.success("✅ Form filled successfully!")
                     except Exception as fill_error:
                         st.error(f"❌ Error filling form: {str(fill_error)}")
                         result['filled_form'] = False
@@ -376,21 +374,65 @@ def process_pdf(uploaded_file, use_ocr=True, template_path=None):
         return None, None
 
 def main():
-        with tab4:
-            st.subheader("🖊️ In-Browser PDF Editing (PDF.js)")
-            st.info("Edit, annotate, and highlight your PDF directly in the browser. Download your edited PDF, then re-upload it below to save changes.")
-            import base64
-            import os
-            pdf_bytes = None
-            if st.session_state.filled_forms:
-                pdf_bytes = list(st.session_state.filled_forms.values())[0]
-            if pdf_bytes:
-                b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
-                pdfjs_url = "https://mozilla.github.io/pdf.js/web/viewer.html"
-                pdfjs_iframe = f'''<iframe src="{pdfjs_url}?file=data:application/pdf;base64,{b64_pdf}" width="900" height="900" allowfullscreen></iframe>'''
-                st.components.v1.html(pdfjs_iframe, height=900)
+    # Final PDF generation section
+    if st.session_state.extraction_results:
+        st.markdown("---")
+        st.header("📝 Finalize and Download Completed PDF")
+        st.info("After reviewing and editing, generate a single, finalized PDF with all merged data and images, ready for downstream submission.")
+        # Aggregate all edited data and images
+        all_edited_data = {}
+        all_images = []
+        for filename, result in st.session_state.extraction_results.items():
+            # Use latest edits if available
+            pdf_key = f"{Path(filename).stem}_edited_filled.pdf"
+            if pdf_key in st.session_state.filled_forms:
+                # Optionally parse edited fields from filled PDF (if tracked)
+                # For now, use original extracted data
+                all_edited_data.update(result['extracted_data'])
             else:
-                st.warning("No filled PDF available for editing.")
+                all_edited_data.update(result['extracted_data'])
+            if result.get('images'):
+                all_images.extend(result['images'])
+
+        # Button to generate final PDF
+        if st.button("Generate Final PDF", key="generate_final_pdf_btn"):
+            import tempfile
+            from src.form_filler import FormFiller
+            template_path = "templates/STEP2.pdf"
+            with tempfile.TemporaryDirectory() as temp_dir:
+                output_file = Path(temp_dir) / "STEP2_final.pdf"
+                filler = FormFiller(template_path)
+                try:
+                    filler.fill_form(
+                        all_edited_data,
+                        str(output_file),
+                        verbose=False,
+                        images=all_images
+                    )
+                    with open(output_file, "rb") as f:
+                        final_pdf_bytes = f.read()
+                    # Save to output folder
+                    output_dir = Path("output")
+                    output_dir.mkdir(exist_ok=True)
+                    output_path = output_dir / "STEP2_final.pdf"
+                    with open(output_path, "wb") as f:
+                        f.write(final_pdf_bytes)
+                    st.success(f"Finalized PDF saved to: {output_path}")
+                    # Download button
+                    st.download_button(
+                        label="⬇️ Download Final PDF",
+                        data=final_pdf_bytes,
+                        file_name="STEP2_final.pdf",
+                        mime="application/pdf",
+                        key="download_final_pdf_btn"
+                    )
+                    # Inline preview
+                    import base64
+                    b64_pdf = base64.b64encode(final_pdf_bytes).decode('utf-8')
+                    pdf_display = f'<iframe src="data:application/pdf;base64,{b64_pdf}" width="900" height="900" type="application/pdf"></iframe>'
+                    st.components.v1.html(pdf_display, height=900)
+                except Exception as e:
+                    st.error(f"Error generating final PDF: {str(e)}")
 
             st.markdown("---")
             st.subheader("⬆️ Upload Edited PDF to Save")
@@ -455,20 +497,6 @@ def main():
                         st.components.v1.html(pdf_display, height=900)
             else:
                 st.info("No edited PDFs found in output folder.")
-        with tab4:
-            st.subheader("🖊️ In-Browser PDF Editing (PDF.js)")
-            st.info("Edit, annotate, and highlight your PDF directly in the browser. Download your edited PDF, then re-upload it below to save changes.")
-            import base64
-            pdf_bytes = None
-            if st.session_state.filled_forms:
-                pdf_bytes = list(st.session_state.filled_forms.values())[0]
-            if pdf_bytes:
-                b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
-                pdfjs_url = "https://mozilla.github.io/pdf.js/web/viewer.html"
-                pdfjs_iframe = f'''<iframe src="{pdfjs_url}?file=data:application/pdf;base64,{b64_pdf}" width="900" height="900" allowfullscreen></iframe>'''
-                st.components.v1.html(pdfjs_iframe, height=900)
-            else:
-                st.warning("No filled PDF available for editing.")
 
             st.markdown("---")
             st.subheader("⬆️ Upload Edited PDF to Save")
@@ -620,7 +648,7 @@ def main():
             
             # Step 2: Create single filled PDF from combined data
             if enable_filling and template_path and all_extracted_data:
-                status_text.markdown(f"**Creating final STEP2 form with combined data...**")
+                status_text.markdown("**Creating final STEP2 form with combined data...**")
                 
                 try:
                     with tempfile.TemporaryDirectory() as temp_dir:
@@ -642,7 +670,7 @@ def main():
                                 all_extracted_data,
                                 str(output_file),
                                 verbose=False,
-                                images=all_images if all_images else None
+                                images=all_images
                             )
                             
                             # Read filled PDF
@@ -672,25 +700,25 @@ def main():
 
         # Tabs for different views
     tab1, tab2, tab3, tab4 = st.tabs(["📋 Extracted Data", "📥 Downloads", "📈 Summary", "🖊️ PDF.js Editor"])
-        with tab4:
-            st.subheader("🖊️ In-Browser PDF Editing (PDF.js)")
-            st.info("Edit, annotate, and highlight your PDF directly in the browser. Changes are not saved to backend automatically.")
-            # Embed PDF.js viewer/editor
-            # Use the first filled PDF for demo (can be extended for selection)
-            import base64
-            pdf_bytes = None
-            if st.session_state.filled_forms:
-                # Use the first PDF in filled_forms
-                pdf_bytes = list(st.session_state.filled_forms.values())[0]
-            if pdf_bytes:
-                b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
-                # PDF.js viewer HTML (hosted version or local)
-                pdfjs_url = "https://mozilla.github.io/pdf.js/web/viewer.html"
-                # Pass PDF as base64 data URI
-                pdfjs_iframe = f'''<iframe src="{pdfjs_url}?file=data:application/pdf;base64,{b64_pdf}" width="900" height="900" allowfullscreen></iframe>'''
-                st.components.v1.html(pdfjs_iframe, height=900)
-            else:
-                st.warning("No filled PDF available for editing.")
+    with tab4:
+        st.subheader("🖊️ In-Browser PDF Editing (PDF.js)")
+        st.info("Edit, annotate, and highlight your PDF directly in the browser. Changes are not saved to backend automatically.")
+        # Embed PDF.js viewer/editor
+        # Use the first filled PDF for demo (can be extended for selection)
+        import base64
+        pdf_bytes = None
+        if st.session_state.filled_forms:
+            # Use the first PDF in filled_forms
+            pdf_bytes = list(st.session_state.filled_forms.values())[0]
+        if pdf_bytes:
+            b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
+            # PDF.js viewer HTML (hosted version or local)
+            pdfjs_url = "https://mozilla.github.io/pdf.js/web/viewer.html"
+            # Pass PDF as base64 data URI
+            pdfjs_iframe = f'''<iframe src="{pdfjs_url}?file=data:application/pdf;base64,{b64_pdf}" width="900" height="900" allowfullscreen></iframe>'''
+            st.components.v1.html(pdfjs_iframe, height=900)
+        else:
+            st.warning("No filled PDF available for editing.")
 
         with tab1:
             # User selects which file to view/edit
