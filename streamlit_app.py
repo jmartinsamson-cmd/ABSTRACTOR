@@ -693,9 +693,12 @@ def main():
                 st.warning("No filled PDF available for editing.")
 
         with tab1:
-            # Show extracted data for each file
-            for filename, result in st.session_state.extraction_results.items():
-                with st.expander(f"📄 {filename}", expanded=True):
+            # User selects which file to view/edit
+            file_options = list(st.session_state.extraction_results.keys())
+            selected_file = st.selectbox("Select a file to view/edit:", file_options, index=len(file_options)-1 if file_options else 0)
+            if selected_file:
+                result = st.session_state.extraction_results[selected_file]
+                with st.expander(f"📄 {selected_file}", expanded=True):
                     col_a, col_b, col_c = st.columns([1, 1, 1])
                     with col_a:
                         st.metric("Text Length", f"{result['text_length']:,} chars")
@@ -706,7 +709,7 @@ def main():
 
                     # Editable form overlay for extracted fields
                     st.subheader("Edit Extracted Fields:")
-                    with st.form(f"edit_form_{filename}"):
+                    with st.form(f"edit_form_{selected_file}"):
                         edited_fields = {}
                         for key, value in result['extracted_data'].items():
                             if isinstance(value, dict):
@@ -721,35 +724,31 @@ def main():
                     # If edits submitted, refill PDF and update preview
                     if submit_edits:
                         st.info("Refilling PDF with updated fields...")
-                        # Refill PDF using FormFiller
                         import tempfile
                         from src.form_filler import FormFiller
-                        # Use fixed template path in code
                         template_path = "templates/STEP2.pdf"
                         with tempfile.TemporaryDirectory() as temp_dir:
-                            output_file = Path(temp_dir) / f"{Path(filename).stem}_edited_filled.pdf"
+                            output_file = Path(temp_dir) / f"{Path(selected_file).stem}_edited_filled.pdf"
                             filler = FormFiller(template_path)
                             images = result.get('images', None)
                             try:
                                 filler.fill_form(edited_fields, str(output_file), verbose=False, images=images)
                                 with open(output_file, 'rb') as f:
                                     edited_pdf_bytes = f.read()
-                                st.session_state.filled_forms[f"{Path(filename).stem}_edited_filled.pdf"] = edited_pdf_bytes
+                                st.session_state.filled_forms[f"{Path(selected_file).stem}_edited_filled.pdf"] = edited_pdf_bytes
                                 st.success("PDF updated and refilled with your edits!")
                             except Exception as e:
                                 st.error(f"Error updating PDF: {str(e)}")
 
                     # Inline PDF viewer for filled PDF (if available)
                     st.subheader("Review Filled PDF:")
-                    pdf_key = f"{Path(filename).stem}_edited_filled.pdf"
+                    pdf_key = f"{Path(selected_file).stem}_edited_filled.pdf"
                     pdf_bytes = st.session_state.filled_forms.get(pdf_key)
                     if pdf_bytes:
-                        # Embed PDF in HTML using base64
                         import base64
                         b64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
                         pdf_display = f'<iframe src="data:application/pdf;base64,{b64_pdf}" width="700" height="900" type="application/pdf"></iframe>'
                         st.components.v1.html(pdf_display, height=900)
-                        # Save to output folder
                         output_dir = Path("output")
                         output_dir.mkdir(exist_ok=True)
                         output_path = output_dir / pdf_key
