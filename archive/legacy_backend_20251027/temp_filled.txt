@@ -1,0 +1,403 @@
+Warning: OCR libraries not available. Install pytesseract and pdf2image for scanned PDF support.
+======================================================================
+DEBUG: Charles Alleman_filled.pdf
+======================================================================
+
+Pages: 95
+Total characters: 7760
+Total lines: 217
+
+----------------------------------------------------------------------
+FULL TEXT EXTRACTION:
+----------------------------------------------------------------------
+INVOICE
+BRADLEY ABSTRACT, LLC
+300 Rue Beauregard
+Ste C
+Lafayette, LA 70508michelle@bradleyabstractors.com
++1 (337) 234-7470
+LEGACY TITLE
+Bill to
+Sharla A. Ducote
+Legacy Title L L C
+11813 Market Place Ave
+Baton Rouge, LA 70816
+United States
+Invoice details
+Invoice no.: 25-798
+Terms: Net 30
+Invoice date: 10/24/2025
+Due date: 11/23/2025Name: Veal, Teonte
+File #: 25-3-12734
+Type: 35YR+
+#Date Product or service Description Qty Rate Amount
+1.10/24/2025 Abstracting fees Abstracting fees 1 $200.00 $200.00
+2.10/24/2025 COPIES 1 $89.00 $89.00
+Ways to pay
+View and paySubtotal $289.00
+Sales tax $18.00
+Total $307.00
+
+1P.O.BOX52521
+Lafayette,Louisiana70505
+(337)234-7470
+Fax:(337)234-7495
+www.bradleyabstractors.com
+abstract@bradleyabstractors.com
+CONVEYANCE AND MORTGAGE CERTIFICATE
+FOR:LegacyTitle FILE #:25-3-12734
+PROPERTY DESCRIPTION: Lot 100,ofVidrine’s Royal Ridge Estate Subdivision.
+Saint LandryParish,Louisiana.(153Cabernet Drive Opelousas,La 70570)
+PERIOD OF SEARCH: November13,1979throughOctober22,2025
+PRESENT OWNER(S): Charles Lee AllemanandVickie Marie Alleman
+This is not a Title Opinion. Ihave made a careful examinationofthe MORTGAGE andCONVEYANCE records inthe
+office ofthe ClerkandRecorderinthe ParishofSAINT LANDRY,State ofLouisiana,inthe names ofthe parties as disclosedbythe
+sets includedinthe abstract andprovidedbyclient. The examinationis limitedtothe timeframe requestedbyclient. Client shall
+defend,holdharmless andindemnifyabstractorforanysearches outside ofthe records andParishspecifiedabove. Idoherebycertify
+that the followingcopies are all the instruments affectingthe title tothe above captionedproperty,as accuratelydisclosedbythe
+indices tosaidRecords. This abstract is not intendedtoreflect,nordoes it infact reflect,the current mineral ownershipofthe subject
+property. Novariations ofthe listednames have beensearchedunless otherwise specified. We didnot researchbonds. We donot
+warrant the authenticityofthe sets,nordowe warrant the validityofthe sets ofcancellations andreleases. We donot certifytothe
+taxinformationunless a taxcertificate is attached. Statewide UCC andBankruptcyPacersearches are separatelyrequestedservices
+andare not searchedunless expresslyrequestedbyclient inorder.
+---------------------------------------------------------------------------------
+NAMES SEARCHED:
+Charles Lee Alleman
+Vickie Marie Alleman
+CMH Homes,Inc.
+St LandryHomesteadFederal Savings
+Hubert Paul Vidrine
+TammyJoubert Vidrine
+JosephNoltonBeaugh
+Della Doninque Beaugh
+WillingtonBeaugh
+DorothyE Lemaire Beaugh
+JeanE BeaughIrene DarbyBeaughMille
+JohnMiller
+Annie BeaughMagee
+J.E.Magee
+George Beaugh
+Norma StellyBeaugh
+Sandra Faye BeaughMensman
+BrandonJosephBeaugh
+Stephanie Marie Beaugh
+Teonte Kyliel Laface Veal (J&L
+Search only)
+All names searched20years forFederal judgments & liens
+---------------------------------------------------------------------------------
+CONVEYANCE DOCUMENTS:
+#101065-A (K-5/340)Plat; Filed: 05/23/1925
+#638101(DON-27/100)Donation; Filed: 11/13/1979
+#739113(F-32/529)CashSale; Filed: 01/29/1990
+#852749(W-37/437)CashSale; Filed: 02/28/2000
+#852750(W-37/439)CashSale; Filed: 02/28/2000
+#888414(D-39/765)Judgment ofPossession; Filed: 06/03/2002
+#919880(E-40/282)CashSale; Filed: 02/06/2004
+#970763(O-42/108)Dedication& Restrictive Covenants; Filed: 10/05/2006
+#971037(D-42/353)Correction; Filed: 10/12/2006
+#977520(W-42/1)Dedication& Restrictions; Filed: 02/16/2007
+#1012231Amendment toRestrictions; Filed: 01/28/2009
+#1041921Amendment toRestrictions; Filed: 10/04/2010
+#1148403CashSale; Filed: 10/13/2016
+#1152348AmendedDedication; Filed: 01/13/2017
+
+2#1173668Resolution; Filed: 05/15/2018
+#1178070CashSale; Filed: 08/27/2018
+#1224480Immobilization; Filed: 12/23/2021
+#1224481CashSale; Filed: 12/23/2021
+---------------------------------------------------------------------------------
+ENCUMBRANCES:
+#1224482Mortgage; Filed: 12/23/2021
+---------------------------------------------------------------------------------
+2024 TAX INFORMATION: Assessment 0604233210CAQ–Taxes PaidAnnually
+*Please see tax sheets attached for Tax Information*
+___________________________________________________
+BRADLEY ABSTRACT, LLC
+
+COB: 1224481; Page: 1; Filed: 12/23/2021 12:33:34PM  [stlandry: LV]
+
+COB: 1224481; Page: 2; Filed: 12/23/2021 12:33:34PM  [stlandry: LV]
+
+COB: 1224481; Page: 3; Filed: 12/23/2021 12:33:34PM  [stlandry: LV]
+
+COB: 1224480; Page: 1; Filed: 12/23/2021 12:31:38PM  [stlandry: LV]
+
+COB: 1224480; Page: 2; Filed: 12/23/2021 12:31:38PM  [stlandry: LV]
+
+COB: 1224480; Page: 3; Filed: 12/23/2021 12:31:38PM  [stlandry: LV]
+
+MOB: 1224482; Page: 1; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+MOB: 1224482; Page: 2; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+MOB: 1224482; Page: 3; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+MOB: 1224482; Page: 4; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+MOB: 1224482; Page: 15; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+MOB: 1224482; Page: 16; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+MOB: 1224482; Page: 17; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+MOB: 1224482; Page: 18; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+MOB: 1240689; Page: 1; Filed: 3/10/2023 11:20:53AM  [stlandry: IB]
+
+Parcel#
+0604233210CAQ
+View on Map (http://stlandrymapping.azurewebsites.net/?parcelid=0604233210CAQ)
+Primary Owner
+ALLEMAN, CHARLES LESS
+Mailing Address
+153 CHARDONNAY DR
+OPELOUSAS LA 70570
+Ward
+WD-6-OUT
+Type
+REAL PROPERTY
+Legal
+1 LOT 100 (.367 AC) (100X160) VIDRINES ROYAL RIDGE ESTATES IN SEC 15 T-7S R-3E 1224481
+(MH 2019 CALYTON HOME SERIAL # CS2024819TN-A/B)
+Physical Address
+153 CHARDONNAY DR
+Parcel Items
+Property Class Assessed Value Units Homestead
+11 MOBILE H. 12,190 1.00 7,500
+39 RURAL SUBD LOT 1,570 1.00 0
+TOTAL 13,760 2.00 7,500
+Deeds
+Deed# Type Date Amount  BookPage
+1224480 DECLARATION OF IMMOBILIZATION 12/23/2021 0
+1224481 CASH SALE 12/23/2021 155,000
+1178070 CASH SALE 8/27/2018 240,000
+Locations
+Subdivision Block LotSection Township Range Tract
+VIDRINE ROYAL EST 6- 0000 100
+PARISHSt. Landry Parish
+Assessor
+2026 Assessment Listing
+Priv acy - T erms10/22/25, 8:47 AM Print
+https://www.stlandryassessor.org/Details?parcelNumber=0604233210CAQ/0/0&taxYear=0&captchaToken=0cAFcWeA49qyH9n70DEdMVulIUnd-kIC0g… 1/2
+
+
+Millage Mills Taxpayer Tax Homestead Tax
+02 PARISH TAX OUT 33.62M 33.6200 210.46 252.14
+24 RD D 11A SUB2 0.0000 0.00 0.00
+42 FIRE DIST 3 16.75M 16.7500 104.86 125.62
+50 BY PLAQ 12 DR 18.94M 18.9400 118.56 142.06
+31 AC ST LANDRY HOSP 9.87M 9.8700 61.80 74.02
+TOTALS 79.1800 495.68 593.84
+Notes
+S715
+101065-A (K-5-340) 23426 BEAUGH DONATED 638101 (DON 27-100) ANNIE BEAUGH MAGEE
+SELLS HER UND INT IN 60.25 AC TO JOSEPH N BEAUGH ET ALS 739113 (F-32-529) JEAN E
+BEAUGH SELLS HER UND INT IN ITEM 1 TO GEORGE & NORMA BEAUGH 852749 (W-37-437)
+IRENE B MILLER SELLS HER UND INT IN ITEM 1 TO GEORGE & NORMA BEAUGH 852750
+(W-37-439) JUDGT OF POSS OF JOSEPH NOLTON BEAUGH & DELLA DOMINGUE BEAUGH
+888414 (D-39-765) BEAUGH 919880 (E-40-282) PLAT10/22/25, 8:47 AM Print
+https://www.stlandryassessor.org/Details?parcelNumber=0604233210CAQ/0/0&taxYear=0&captchaToken=0cAFcWeA49qyH9n70DEdMVulIUnd-kIC0g… 2/2
+
+St. Landry - Tax Notice Inquiry
+10/24/2025 10:19:04 AM
+Tax Notice#  72726
+Tax Year 2024
+Taxpayer
+ALLEMAN, CHARLES LESS
+*** CHARDONNA Y DR
+OPELOUSAS LA  *****-****
+Legal
+1 LOT  100 (.367 AC) (100X160) VIDRINES ROY AL RIDGE
+ESTATES IN SEC 15 T-7S R-3E 1224481
+(MH 2019 CAL YTON HOME SERIAL  # CS2024819TN-A/B)
+Parcels
+Parcel# Address % Tax
+0604233210CAQ 153 CHARDONNA Y DR 100.0000
+History
+Date Description Amount
+11/19/2024 ORIGINAL  TAXES 495.68
+12/4/2024 PAYMENT -495.68
+Items
+Class Value Units Homestead
+11 MOBILE H. 12,190 1.00 7,500
+39 RURAL  SUBD LOT 1,570 1.00 0Taxes
+495.68Interest
+0.00Cost
+0.00Other
+0.00Paid
+495.68Balance
+0.00
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+PAGE-BY-PAGE BREAKDOWN:
+----------------------------------------------------------------------
+
+--- Page 1 (610 chars) ---
+INVOICE
+BRADLEY ABSTRACT, LLC
+300 Rue Beauregard
+Ste C
+Lafayette, LA 70508michelle@bradleyabstractors.com
++1 (337) 234-7470
+LEGACY TITLE
+Bill to
+Sharla A. Ducote
+Legacy Title L L C
+11813 Market Place Ave
+Baton Rouge, LA 70816
+United States
+Invoice details
+Invoice no.: 25-798
+Terms: Net 30
+Invoice date: 10/24/2025
+Due date: 11/23/2025Name: Veal, Teonte
+File #: 25-3-12734
+Type: 35YR+
+#Date Product or service Description Qty Rate Amount
+1.10/24/2025 Abstracting fees Abstracting fees 1 $200.00 $200....
+
+--- Page 2 (2989 chars) ---
+1P.O.BOX52521
+Lafayette,Louisiana70505
+(337)234-7470
+Fax:(337)234-7495
+www.bradleyabstractors.com
+abstract@bradleyabstractors.com
+CONVEYANCE AND MORTGAGE CERTIFICATE
+FOR:LegacyTitle FILE #:25-3-12734
+PROPERTY DESCRIPTION: Lot 100,ofVidrine’s Royal Ridge Estate Subdivision.
+Saint LandryParish,Louisiana.(153Cabernet Drive Opelousas,La 70570)
+PERIOD OF SEARCH: November13,1979throughOctober22,2025
+PRESENT OWNER(S): Charles Lee AllemanandVickie Marie Alleman
+This is not a Title Opinion. Ihave made a ...
+
+--- Page 3 (559 chars) ---
+2#1173668Resolution; Filed: 05/15/2018
+#1178070CashSale; Filed: 08/27/2018
+#1224480Immobilization; Filed: 12/23/2021
+#1224481CashSale; Filed: 12/23/2021
+---------------------------------------------------------------------------------
+ENCUMBRANCES:
+#1224482Mortgage; Filed: 12/23/2021
+---------------------------------------------------------------------------------
+2024 TAX INFORMATION: Assessment 0604233210CAQ–Taxes PaidAnnually
+*Please see tax sheets attached for Tax Information*
+______________...
+
+--- Page 4 (67 chars) ---
+COB: 1224481; Page: 1; Filed: 12/23/2021 12:33:34PM  [stlandry: LV]
+
+--- Page 5 (67 chars) ---
+COB: 1224481; Page: 2; Filed: 12/23/2021 12:33:34PM  [stlandry: LV]
+
+--- Page 6 (67 chars) ---
+COB: 1224481; Page: 3; Filed: 12/23/2021 12:33:34PM  [stlandry: LV]
+
+--- Page 7 (67 chars) ---
+COB: 1224480; Page: 1; Filed: 12/23/2021 12:31:38PM  [stlandry: LV]
+
+--- Page 8 (67 chars) ---
+COB: 1224480; Page: 2; Filed: 12/23/2021 12:31:38PM  [stlandry: LV]
+
+--- Page 9 (67 chars) ---
+COB: 1224480; Page: 3; Filed: 12/23/2021 12:31:38PM  [stlandry: LV]
+
+--- Page 10 (67 chars) ---
+MOB: 1224482; Page: 1; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+--- Page 11 (67 chars) ---
+MOB: 1224482; Page: 2; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+--- Page 12 (67 chars) ---
+MOB: 1224482; Page: 3; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+--- Page 13 (67 chars) ---
+MOB: 1224482; Page: 4; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+--- Page 14 (68 chars) ---
+MOB: 1224482; Page: 15; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+--- Page 15 (68 chars) ---
+MOB: 1224482; Page: 16; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+--- Page 16 (68 chars) ---
+MOB: 1224482; Page: 17; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+--- Page 17 (68 chars) ---
+MOB: 1224482; Page: 18; Filed: 12/23/2021 12:35:30PM  [stlandry: LV]
+
+--- Page 18 (66 chars) ---
+MOB: 1240689; Page: 1; Filed: 3/10/2023 11:20:53AM  [stlandry: IB]
+
+--- Page 19 (1030 chars) ---
+Parcel#
+0604233210CAQ
+View on Map (http://stlandrymapping.azurewebsites.net/?parcelid=0604233210CAQ)
+Primary Owner
+ALLEMAN, CHARLES LESS
+Mailing Address
+153 CHARDONNAY DR
+OPELOUSAS LA 70570
+Ward
+WD-6-OUT
+Type
+REAL PROPERTY
+Legal
+1 LOT 100 (.367 AC) (100X160) VIDRINES ROYAL RIDGE ESTATES IN SEC 15 T-7S R-3E 1224481
+(MH 2019 CALYTON HOME SERIAL # CS2024819TN-A/B)
+Physical Address
+153 CHARDONNAY DR
+Parcel Items
+Property Class Assessed Value Units Homestead
+11 MOBILE H. 12,190 1.00 7,500
+39 RURAL SU...
+
+--- Page 20 (889 chars) ---
+Millage Mills Taxpayer Tax Homestead Tax
+02 PARISH TAX OUT 33.62M 33.6200 210.46 252.14
+24 RD D 11A SUB2 0.0000 0.00 0.00
+42 FIRE DIST 3 16.75M 16.7500 104.86 125.62
+50 BY PLAQ 12 DR 18.94M 18.9400 118.56 142.06
+31 AC ST LANDRY HOSP 9.87M 9.8700 61.80 74.02
+TOTALS 79.1800 495.68 593.84
+Notes
+S715
+101065-A (K-5-340) 23426 BEAUGH DONATED 638101 (DON 27-100) ANNIE BEAUGH MAGEE
+SELLS HER UND INT IN 60.25 AC TO JOSEPH N BEAUGH ET ALS 739113 (F-32-529) JEAN E
+BEAUGH SELLS HER UND INT IN ITEM 1 TO GEOR...
+
+--- Page 21 (635 chars) ---
+St. Landry - Tax Notice Inquiry
+10/24/2025 10:19:04 AM
+Tax Notice#  72726
+Tax Year 2024
+Taxpayer
+ALLEMAN, CHARLES LESS
+*** CHARDONNA Y DR
+OPELOUSAS LA  *****-****
+Legal
+1 LOT  100 (.367 AC) (100X160) VIDRINES ROY AL RIDGE
+ESTATES IN SEC 15 T-7S R-3E 1224481
+(MH 2019 CAL YTON HOME SERIAL  # CS2024819TN-A/B)
+Parcels
+Parcel# Address % Tax
+0604233210CAQ 153 CHARDONNA Y DR 100.0000
+History
+Date Description Amount
+11/19/2024 ORIGINAL  TAXES 495.68
+12/4/2024 PAYMENT -495.68
+Items
+Class Value Units Home...
+
+----------------------------------------------------------------------
+CHARACTER ANALYSIS:
+----------------------------------------------------------------------
+Alphabetic characters: 4384
+Numeric characters: 1440
+Whitespace characters: 928
+Special characters: 1008
+
+Total words: 886
+Unique words: 564
+Sample words: INVOICE, BRADLEY, ABSTRACT,, LLC, 300, Rue, Beauregard, Ste, C, Lafayette,, LA, 70508michelle@bradleyabstractors.com, +1, (337), 234-7470, LEGACY, TITLE, Bill, to, Sharla
