@@ -141,9 +141,11 @@ with st.sidebar:
                         )
                         
                         # Save to output folder
-                        client_name = st.session_state.extracted_data.get('client_name', 'client')
-                        file_number = st.session_state.extracted_data.get('file_number', 'unknown')
-                        output_path = Path("output") / f"complete_abstract_{file_number.replace('/', '_')}.pdf"
+                        client_name = st.session_state.extracted_data.get('client_name') or 'client'
+                        file_number = st.session_state.extracted_data.get('file_number') or 'unknown'
+                        # Sanitize file_number for filename
+                        safe_file_number = file_number.replace('/', '_').replace('\\', '_')
+                        output_path = Path("output") / f"complete_abstract_{safe_file_number}.pdf"
                         output_path.parent.mkdir(exist_ok=True)
                         
                         with open(output_path, 'wb') as f:
@@ -182,10 +184,11 @@ if st.session_state.pdf_processed:
         
         col1, col2 = st.columns([2, 1])
         with col1:
+            safe_filename = (st.session_state.extracted_data.get('file_number') or 'document').replace('/', '_').replace('\\', '_')
             st.download_button(
                 label="📥 Download Complete Property Abstract PDF",
                 data=st.session_state.generated_pdf,
-                file_name=f"bradley_abstract_{st.session_state.extracted_data.get('file_number', 'document').replace('/', '_')}.pdf",
+                file_name=f"bradley_abstract_{safe_filename}.pdf",
                 mime="application/pdf",
                 type="primary",
                 use_container_width=True
@@ -344,7 +347,8 @@ if st.session_state.pdf_processed:
                                 )
                                 
                                 # Save to output folder
-                                output_path = Path("output") / f"complete_abstract_{file_number.replace('/', '_')}.pdf"
+                                safe_file_number = (file_number or 'unknown').replace('/', '_').replace('\\', '_')
+                                output_path = Path("output") / f"complete_abstract_{safe_file_number}.pdf"
                                 output_path.parent.mkdir(exist_ok=True)
                                 
                                 with open(output_path, 'wb') as f:
@@ -356,7 +360,7 @@ if st.session_state.pdf_processed:
                                 st.download_button(
                                     label="📥 Download Complete Property Abstract PDF",
                                     data=complete_pdf_bytes,
-                                    file_name=f"bradley_abstract_{file_number.replace('/', '_')}.pdf",
+                                    file_name=f"bradley_abstract_{safe_file_number}.pdf",
                                     mime="application/pdf",
                                     use_container_width=True
                                 )
