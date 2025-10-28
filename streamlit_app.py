@@ -102,7 +102,17 @@ with st.sidebar:
                     with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_cover:
                         tmp_cover_path = tmp_cover.name
                     
-                    success = generator.fill_cover_page(st.session_state.extracted_data, tmp_cover_path)
+                    success = generator.fill_cover_page(
+                        output_path=tmp_cover_path,
+                        for_field=st.session_state.extracted_data.get('client_name', ''),
+                        file_number=st.session_state.extracted_data.get('file_number', ''),
+                        property_description=st.session_state.extracted_data.get('property_description', ''),
+                        period_of_search=st.session_state.extracted_data.get('period_of_search', ''),
+                        present_owners=st.session_state.extracted_data.get('present_owners', ''),
+                        names_searched=st.session_state.extracted_data.get('names_searched', ''),
+                        conveyance_docs=st.session_state.extracted_data.get('conveyance_documents', ''),
+                        encumbrances=st.session_state.extracted_data.get('encumbrances', '')
+                    )
                     
                     if success:
                         # Read cover page bytes
@@ -293,7 +303,17 @@ if st.session_state.pdf_processed:
                         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_cover:
                             tmp_cover_path = tmp_cover.name
                         
-                        success = generator.fill_cover_page(data, tmp_cover_path)
+                        success = generator.fill_cover_page(
+                            output_path=tmp_cover_path,
+                            for_field=client_name,
+                            file_number=file_number,
+                            property_description=property_description,
+                            period_of_search=period_of_search,
+                            present_owners=present_owners,
+                            names_searched=names_searched,
+                            conveyance_docs=conveyance_docs,
+                            encumbrances=encumbrances
+                        )
                         
                         if not success:
                             st.error("❌ Failed to generate cover page.")
