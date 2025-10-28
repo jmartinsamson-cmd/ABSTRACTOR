@@ -5,6 +5,7 @@ import tempfile
 import json
 from datetime import datetime
 import io
+from datetime import datetime
 import PyPDF2
 
 # Add src to path
@@ -81,6 +82,17 @@ with st.sidebar:
                     st.write("### 🔍 Extracted Data:")
                     st.json(fields)
                     
+                    # Compose tax information string
+                    tax_year = None
+                    try:
+                        tax_year = (fields.get('tax_info') or {}).get('tax_year')
+                    except Exception:
+                        tax_year = None
+                    tax_year = tax_year or str(datetime.now().year)
+                    assessment_number = fields.get('assessment_number') or ''
+                    tax_status = 'Taxes Paid Annually'
+                    tax_information = f"{tax_year} Assessment # {assessment_number} — {tax_status}".strip()
+
                     # Store in session state
                     st.session_state.extracted_data = {
                         'client_name': fields.get('client_name', ''),
@@ -92,7 +104,8 @@ with st.sidebar:
                         'conveyance_documents': fields.get('conveyance_documents', ''),
                         'encumbrances': fields.get('encumbrances', ''),
                         'assessment_number': fields.get('assessment_number', '0610429400'),
-                        'tax_status': 'Taxes Paid Annually'
+                        'tax_status': tax_status,
+                        'tax_information': tax_information
                     }
                     st.session_state.pdf_processed = True
                     
@@ -116,6 +129,7 @@ with st.sidebar:
                         names_searched=st.session_state.extracted_data.get('names_searched', ''),
                         conveyance_docs=st.session_state.extracted_data.get('conveyance_documents', ''),
                         encumbrances=st.session_state.extracted_data.get('encumbrances', ''),
+                        tax_information=st.session_state.extracted_data.get('tax_information', ''),
                         verbose=True
                     )
                     
@@ -313,6 +327,11 @@ if st.session_state.pdf_processed:
                             with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_cover:
                                 tmp_cover_path = tmp_cover.name
                             
+                            # Compose tax information for manual form path
+                            tax_year_value = (st.session_state.get('extracted_data') or {}).get('tax_info', {}).get('tax_year') if st.session_state.get('extracted_data') else None
+                            tax_year_value = tax_year_value or str(datetime.now().year)
+                            tax_information_line = f"{tax_year_value} Assessment # {assessment_number or ''} — {tax_status or 'Taxes Paid Annually'}".strip()
+
                             success = generator.fill_cover_page(
                                 output_path=tmp_cover_path,
                                 for_field=client_name,
@@ -322,7 +341,8 @@ if st.session_state.pdf_processed:
                                 present_owners=present_owners,
                                 names_searched=names_searched,
                                 conveyance_docs=conveyance_docs,
-                                encumbrances=encumbrances
+                                encumbrances=encumbrances,
+                                tax_information=tax_information_line
                             )
                             
                             if not success:
