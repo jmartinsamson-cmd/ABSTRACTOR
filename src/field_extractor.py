@@ -16,6 +16,16 @@ class FieldExtractor:
     def extract_all_fields(self) -> Dict[str, Any]:
         """Extract all recognized fields from the document"""
         self.fields = {
+            # Bradley Abstract specific fields
+            "client_name": self.extract_client_name(),
+            "file_number": self.extract_file_number(),
+            "property_description": self.extract_property_description(),
+            "period_of_search": self.extract_period_of_search(),
+            "present_owners": self.extract_present_owners(),
+            "conveyance_documents": self.extract_conveyance_documents(),
+            "encumbrances": self.extract_encumbrances(),
+            "assessment_number": self.extract_assessment_number(),
+            # Original fields
             "owner_name": self.extract_owner_name(),
             "property_address": self.extract_property_address(),
             "parcel_number": self.extract_parcel_number(),
@@ -29,6 +39,86 @@ class FieldExtractor:
             "additional_fields": self.extract_additional_fields()
         }
         return self.fields
+    
+    def extract_client_name(self) -> Optional[str]:
+        """Extract client name (FOR: field)"""
+        patterns = [
+            r"FOR[\s:]+([A-Za-z][A-Za-z\s&.,-]+?)(?:\s+FILE|$|\n)",
+            r"Client[\s:]+([A-Za-z][A-Za-z\s&.,-]+?)(?:\n|$)"
+        ]
+        return self._extract_with_patterns(patterns)
+    
+    def extract_file_number(self) -> Optional[str]:
+        """Extract file number (FILE #: field)"""
+        patterns = [
+            r"FILE\s*#?[\s:]+([A-Z0-9\-]+)",
+            r"File\s+Number[\s:]+([A-Z0-9\-]+)",
+            r"Case\s+#?[\s:]+([A-Z0-9\-]+)"
+        ]
+        return self._extract_with_patterns(patterns)
+    
+    def extract_property_description(self) -> Optional[str]:
+        """Extract property description (PROPERTY DESCRIPTION: field)"""
+        patterns = [
+            r"PROPERTY\s+DESCRIPTION[\s:]+(.+?)(?=PERIOD\s+OF\s+SEARCH|PRESENT\s+OWNER|\n\n)",
+            r"(?:LOT\s+\d+.*?(?:Town|City|Parish|County).+?)(?=PERIOD|PRESENT|\n\n)"
+        ]
+        result = self._extract_with_patterns(patterns, multiline=True)
+        if result:
+            result = re.sub(r'\s+', ' ', result).strip()
+        return result
+    
+    def extract_period_of_search(self) -> Optional[str]:
+        """Extract period of search (PERIOD OF SEARCH: field)"""
+        patterns = [
+            r"PERIOD\s+OF\s+SEARCH[\s:]+(.+?)(?=PRESENT\s+OWNER|\n\n)",
+            r"(?:from|From)\s+([A-Za-z]+\s+\d+,\s+\d{4})\s+(?:to|through)\s+([A-Za-z]+\s+\d+,\s+\d{4})"
+        ]
+        result = self._extract_with_patterns(patterns, multiline=True)
+        if result:
+            result = re.sub(r'\s+', ' ', result).strip()
+        return result
+    
+    def extract_present_owners(self) -> Optional[str]:
+        """Extract present owner(s) (PRESENT OWNER(S): field)"""
+        patterns = [
+            r"PRESENT\s+OWNER\(?S?\)?[\s:]+([A-Za-z][A-Za-z\s&.,-]+?)(?:\n\n|This\s+is|$)",
+            r"Current\s+Owner[\s:]+([A-Za-z][A-Za-z\s&.,-]+?)(?:\n|$)"
+        ]
+        result = self._extract_with_patterns(patterns)
+        if result:
+            result = result.strip()
+        return result
+    
+    def extract_conveyance_documents(self) -> Optional[str]:
+        """Extract conveyance documents"""
+        patterns = [
+            r"CONVEYANCE\s+DOCUMENTS?[\s:]+(.+?)(?=ENCUMBRANCES|TAX\s+INFORMATION|\n\n)",
+            r"DOCUMENTS?\s+ATTACHED[\s:]+(.+?)(?=ENCUMBRANCES|TAX\s+INFORMATION|\n\n)"
+        ]
+        result = self._extract_with_patterns(patterns, multiline=True)
+        if result:
+            result = re.sub(r'\s+', ' ', result).strip()
+        return result
+    
+    def extract_encumbrances(self) -> Optional[str]:
+        """Extract encumbrances"""
+        patterns = [
+            r"ENCUMBRANCES[\s:]+(.+?)(?=TAX\s+INFORMATION|BRADLEY\s+ABSTRACT|\n\n)",
+        ]
+        result = self._extract_with_patterns(patterns, multiline=True)
+        if result:
+            result = re.sub(r'\s+', ' ', result).strip()
+        return result
+    
+    def extract_assessment_number(self) -> Optional[str]:
+        """Extract assessment/parcel number"""
+        patterns = [
+            r"Assessment\s+Number[\s:#]+([A-Z0-9]+)",
+            r"TAX\s+INFORMATION[\s:]+.*?Assessment\s+#?\s*([A-Z0-9]+)",
+            r"Parcel\s+#?[\s:]+([A-Z0-9]+)"
+        ]
+        return self._extract_with_patterns(patterns, multiline=True)
     
     def extract_owner_name(self) -> Optional[str]:
         """Extract owner/grantor/grantee name"""
