@@ -281,95 +281,95 @@ if st.session_state.pdf_processed:
             col_btn1, col_btn2, col_btn3 = st.columns([2, 1, 2])
             with col_btn2:
                 submit = st.form_submit_button("🔄 Regenerate PDF with Edits", type="primary", use_container_width=True)
-        
-        if submit:
-            if not client_name or not file_number or not property_description:
-                st.error("⚠️ Please fill in all required fields (*)")
-            else:
-                with st.spinner("Generating cover page..."):
-                    try:
-                        # Create data dictionary
-                        data = {
-                            'client_name': client_name,
-                            'file_number': file_number,
-                            'property_description': property_description,
-                            'period_of_search': period_of_search,
-                            'present_owners': present_owners,
-                            'names_searched': names_searched,
-                            'conveyance_documents': conveyance_docs,
-                            'encumbrances': encumbrances,
-                            'assessment_number': assessment_number,
-                            'tax_status': tax_status
-                        }
-                        
-                        # Generate cover page
-                        generator = BradleyAbstractCoverPage()
-                        cover_page_buffer = io.BytesIO()
-                        
-                        # Create temp file for cover page
-                        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_cover:
-                            tmp_cover_path = tmp_cover.name
-                        
-                        success = generator.fill_cover_page(
-                            output_path=tmp_cover_path,
-                            for_field=client_name,
-                            file_number=file_number,
-                            property_description=property_description,
-                            period_of_search=period_of_search,
-                            present_owners=present_owners,
-                            names_searched=names_searched,
-                            conveyance_docs=conveyance_docs,
-                            encumbrances=encumbrances
-                        )
-                        
-                        if not success:
-                            st.error("❌ Failed to generate cover page.")
-                        else:
-                            # Read cover page bytes
-                            with open(tmp_cover_path, 'rb') as f:
-                                cover_page_bytes = f.read()
+            
+            if submit:
+                if not client_name or not file_number or not property_description:
+                    st.error("⚠️ Please fill in all required fields (*)")
+                else:
+                    with st.spinner("Generating cover page..."):
+                        try:
+                            # Create data dictionary
+                            data = {
+                                'client_name': client_name,
+                                'file_number': file_number,
+                                'property_description': property_description,
+                                'period_of_search': period_of_search,
+                                'present_owners': present_owners,
+                                'names_searched': names_searched,
+                                'conveyance_documents': conveyance_docs,
+                                'encumbrances': encumbrances,
+                                'assessment_number': assessment_number,
+                                'tax_status': tax_status
+                            }
                             
-                            # Assemble complete PDF: cover page + all source documents
-                            assembler = PDFAssembler()
+                            # Generate cover page
+                            generator = BradleyAbstractCoverPage()
+                            cover_page_buffer = io.BytesIO()
                             
-                            # Get source document paths/bytes
-                            source_docs = [pdf_info['bytes'] for pdf_info in st.session_state.uploaded_pdfs]
+                            # Create temp file for cover page
+                            with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_cover:
+                                tmp_cover_path = tmp_cover.name
                             
-                            # Assemble: cover page as "billing" (page 1), no bradley form (already in cover), all source docs
-                            complete_pdf_bytes = assembler.assemble_abstract(
-                                billing_pdf_bytes=cover_page_bytes,
-                                bradley_form_bytes=None,  # Cover page already contains the form
-                                scanned_documents=source_docs,
-                                output_path=None
+                            success = generator.fill_cover_page(
+                                output_path=tmp_cover_path,
+                                for_field=client_name,
+                                file_number=file_number,
+                                property_description=property_description,
+                                period_of_search=period_of_search,
+                                present_owners=present_owners,
+                                names_searched=names_searched,
+                                conveyance_docs=conveyance_docs,
+                                encumbrances=encumbrances
                             )
                             
-                            # Save to output folder
-                            output_path = Path("output") / f"complete_abstract_{file_number.replace('/', '_')}.pdf"
-                            output_path.parent.mkdir(exist_ok=True)
-                            
-                            with open(output_path, 'wb') as f:
-                                f.write(complete_pdf_bytes)
-                            
-                            st.success(f"✅ Complete property abstract generated successfully!")
-                            
-                            # Provide download button
-                            st.download_button(
-                                label="📥 Download Complete Property Abstract PDF",
-                                data=complete_pdf_bytes,
-                                file_name=f"bradley_abstract_{file_number.replace('/', '_')}.pdf",
-                                mime="application/pdf",
-                                use_container_width=True
-                            )
-                            
-                            st.info(f"📁 Saved to: `{output_path}`")
-                            
-                            # Show page count
-                            pdf_reader = PyPDF2.PdfReader(io.BytesIO(complete_pdf_bytes))
-                            st.info(f"📄 Total pages: {len(pdf_reader.pages)} (1 cover page + {len(pdf_reader.pages)-1} document pages)")
-                            
-                    except Exception as e:
-                        st.error(f"❌ Error: {str(e)}")
-                        st.exception(e)
+                            if not success:
+                                st.error("❌ Failed to generate cover page.")
+                            else:
+                                # Read cover page bytes
+                                with open(tmp_cover_path, 'rb') as f:
+                                    cover_page_bytes = f.read()
+                                
+                                # Assemble complete PDF: cover page + all source documents
+                                assembler = PDFAssembler()
+                                
+                                # Get source document paths/bytes
+                                source_docs = [pdf_info['bytes'] for pdf_info in st.session_state.uploaded_pdfs]
+                                
+                                # Assemble: cover page as "billing" (page 1), no bradley form (already in cover), all source docs
+                                complete_pdf_bytes = assembler.assemble_abstract(
+                                    billing_pdf_bytes=cover_page_bytes,
+                                    bradley_form_bytes=None,  # Cover page already contains the form
+                                    scanned_documents=source_docs,
+                                    output_path=None
+                                )
+                                
+                                # Save to output folder
+                                output_path = Path("output") / f"complete_abstract_{file_number.replace('/', '_')}.pdf"
+                                output_path.parent.mkdir(exist_ok=True)
+                                
+                                with open(output_path, 'wb') as f:
+                                    f.write(complete_pdf_bytes)
+                                
+                                st.success(f"✅ Complete property abstract generated successfully!")
+                                
+                                # Provide download button
+                                st.download_button(
+                                    label="📥 Download Complete Property Abstract PDF",
+                                    data=complete_pdf_bytes,
+                                    file_name=f"bradley_abstract_{file_number.replace('/', '_')}.pdf",
+                                    mime="application/pdf",
+                                    use_container_width=True
+                                )
+                                
+                                st.info(f"📁 Saved to: `{output_path}`")
+                                
+                                # Show page count
+                                pdf_reader = PyPDF2.PdfReader(io.BytesIO(complete_pdf_bytes))
+                                st.info(f"📄 Total pages: {len(pdf_reader.pages)} (1 cover page + {len(pdf_reader.pages)-1} document pages)")
+                                
+                        except Exception as e:
+                            st.error(f"❌ Error: {str(e)}")
+                            st.exception(e)
 
 else:
     # Welcome screen when no PDFs uploaded
