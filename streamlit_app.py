@@ -106,7 +106,7 @@ with st.sidebar:
 # Main content area
 if st.session_state.pdf_processed or st.session_state.extracted_data:
     st.subheader("✏️ Review and Edit Extracted Information")
-    st.info("� All fields are editable. Update any information as needed before generating the cover page.")
+    st.info("All fields are editable. Update any information as needed before generating the cover page.")
     
     # Create editable form
     with st.form("cover_page_form"):
@@ -299,7 +299,7 @@ else:
     
     # Show example data option
     st.markdown("---")
-    if st.button("� Or start with manual entry (no upload)"):
+    if st.button("📝 Or start with manual entry (no upload)"):
         st.session_state.extracted_data = {
             'client_name': '',
             'file_number': '',

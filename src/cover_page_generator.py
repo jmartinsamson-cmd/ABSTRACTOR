@@ -248,3 +248,44 @@ def merge_cover_with_abstract(cover_path: str, abstract_path: str, output_path: 
     except Exception as e:
         print(f"Error merging PDFs: {e}")
         return False
+
+
+# Compatibility wrapper expected by streamlit_app.py
+class BradleyAbstractCoverPage:
+    """
+    Backwards-compatible adapter so streamlit_app.py can call:
+        generator = BradleyAbstractCoverPage()
+        generator.generate_cover_page(data, output_path)
+
+    This maps the data dict to CoverPageGenerator.fill_cover_page signature.
+    """
+
+    def __init__(self, template_path: Optional[str] = None):
+        # Resolve template relative to repository root (src/.. -> templates/...)
+        if template_path:
+            self.template_path = template_path
+        else:
+            repo_root = Path(__file__).resolve().parent.parent
+            self.template_path = str(repo_root / "templates" / "bradley_abstract_cover.pdf")
+
+    def generate_cover_page(self, data: Dict[str, Any], output_path: str, verbose: bool = False) -> bool:
+        try:
+            generator = CoverPageGenerator(self.template_path)
+        except Exception as e:
+            # Surface a concise error and return False per streamlit expectations
+            print(f"Cover page generator init failed: {e}")
+            return False
+
+        # Map incoming fields with sensible defaults
+        return generator.fill_cover_page(
+            output_path=output_path,
+            for_field=str(data.get("client_name", "")).strip(),
+            file_number=str(data.get("file_number", "")).strip(),
+            property_description=str(data.get("property_description", "")).strip(),
+            period_of_search=str(data.get("period_of_search", "")).strip(),
+            present_owners=str(data.get("present_owners", "")).strip(),
+            names_searched=str(data.get("names_searched", "")).strip(),
+            conveyance_docs=str(data.get("conveyance_documents", "")).strip(),
+            encumbrances=str(data.get("encumbrances", "")).strip(),
+            verbose=verbose,
+        )

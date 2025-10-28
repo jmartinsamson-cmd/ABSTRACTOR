@@ -1,0 +1,15 @@
+{
+  "name": "git-mcp-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A minimal Model Context Protocol (MCP) server exposing Git operations for the current workspace.",
+  "scripts": {
+    "start": "node ./src/index.js",
+    "dev": "NODE_OPTIONS=--enable-source-maps node ./src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.1",
+    "simple-git": "^3.22.0"
+  }
+}
