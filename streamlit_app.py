@@ -45,9 +45,15 @@ with st.sidebar:
     st.info("📄 **Smart Text Extraction:** Uses pdfplumber + OCR fallback for best results")
     
     if uploaded_files and len(uploaded_files) > 0:
-        if st.button("🔍 Extract Data from PDFs", type="primary", use_container_width=True):
+        st.write(f"📁 Files uploaded: {len(uploaded_files)}")  # Debug
+        extract_button = st.button("🔍 Extract Data from PDFs", type="primary", use_container_width=True, key="extract_btn")
+        st.write(f"Button clicked: {extract_button}")  # Debug
+        
+        if extract_button:
+            st.write("🚀 Starting extraction...")  # Debug
             with st.spinner("Extracting data from all PDFs..."):
                 try:
+                    st.write("💾 Saving uploaded files...")  # Debug
                     # Save uploaded files
                     st.session_state.uploaded_pdfs = []
                     all_text = ""
@@ -75,6 +81,9 @@ with st.sidebar:
                     extractor = FieldExtractor(all_text)
                     fields = extractor.extract_all_fields()
                     
+                    # Debug: Show what was extracted
+                    st.write("🔍 **Debug - Extracted fields:**", fields)
+                    
                     # Store in session state
                     st.session_state.extracted_data = {
                         'client_name': fields.get('client_name', ''),
@@ -89,7 +98,57 @@ with st.sidebar:
                         'tax_status': 'Taxes Paid Annually'
                     }
                     st.session_state.pdf_processed = True
-                    st.success("✅ Data extracted successfully! Review and edit below.")
+                    
+                    # Automatically generate the PDF after extraction
+                    st.success("✅ Data extracted successfully! Generating PDF...")
+                    
+                    # Generate cover page
+                    generator = BradleyAbstractCoverPage()
+                    
+                    # Create temp file for cover page
+                    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_cover:
+                        tmp_cover_path = tmp_cover.name
+                    
+                    success = generator.generate_cover_page(st.session_state.extracted_data, tmp_cover_path)
+                    
+                    if success:
+                        # Read cover page bytes
+                        with open(tmp_cover_path, 'rb') as f:
+                            cover_page_bytes = f.read()
+                        
+                        # Assemble complete PDF: cover page + all source documents
+                        assembler = PDFAssembler()
+                        
+                        # Get source document paths/bytes
+                        source_docs = [pdf_info['bytes'] for pdf_info in st.session_state.uploaded_pdfs]
+                        
+                        # Assemble: cover page as "billing" (page 1), no bradley form (already in cover), all source docs
+                        complete_pdf_bytes = assembler.assemble_abstract(
+                            billing_pdf_bytes=cover_page_bytes,
+                            bradley_form_bytes=None,  # Cover page already contains the form
+                            scanned_documents=source_docs,
+                            output_path=None
+                        )
+                        
+                        # Save to output folder
+                        client_name = st.session_state.extracted_data.get('client_name', 'client')
+                        file_number = st.session_state.extracted_data.get('file_number', 'unknown')
+                        output_path = Path("output") / f"complete_abstract_{file_number.replace('/', '_')}.pdf"
+                        output_path.parent.mkdir(exist_ok=True)
+                        
+                        with open(output_path, 'wb') as f:
+                            f.write(complete_pdf_bytes)
+                        
+                        # Store the PDF for download
+                        st.session_state.generated_pdf = complete_pdf_bytes
+                        st.session_state.output_path = str(output_path)
+                        
+                        # Show page count
+                        pdf_reader = PyPDF2.PdfReader(io.BytesIO(complete_pdf_bytes))
+                        st.session_state.page_count = len(pdf_reader.pages)
+                        
+                        st.success(f"✅ Complete property abstract generated! ({st.session_state.page_count} pages)")
+                    
                     st.rerun()
                     
                 except Exception as e:
@@ -99,20 +158,42 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### 💡 How it works")
     st.markdown("""
-    1. Upload a property PDF
-    2. Click Extract Data
-    3. Review & edit fields
-    4. Generate cover page
+    1. Upload client property PDF(s)
+    2. Click **Extract Data from PDFs**
+    3. PDF automatically generated!
+    4. Download or edit if needed
     """)
 
 # Main content area
-if st.session_state.pdf_processed or st.session_state.extracted_data:
-    st.subheader("✏️ Review and Edit Extracted Information")
-    st.info("� All fields are editable. Update any information as needed before generating the cover page.")
+if st.session_state.pdf_processed:
+    # Show generated PDF download
+    if 'generated_pdf' in st.session_state:
+        st.success("🎉 Your Property Abstract is Ready!")
+        
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            st.download_button(
+                label="📥 Download Complete Property Abstract PDF",
+                data=st.session_state.generated_pdf,
+                file_name=f"bradley_abstract_{st.session_state.extracted_data.get('file_number', 'document').replace('/', '_')}.pdf",
+                mime="application/pdf",
+                type="primary",
+                use_container_width=True
+            )
+        with col2:
+            st.info(f"📄 **{st.session_state.page_count}** pages total")
+        
+        st.info(f"💾 Saved to: `{st.session_state.output_path}`")
+        
+        st.markdown("---")
     
-    # Create editable form
-    with st.form("cover_page_form"):
-        col1, col2 = st.columns(2)
+    # Expandable section for editing and regenerating
+    with st.expander("✏️ Edit Extracted Data & Regenerate", expanded=False):
+        st.info("Need to make changes? Edit the fields below and click 'Regenerate PDF'")
+        
+        # Create editable form
+        with st.form("edit_form"):
+            col1, col2 = st.columns(2)
         
         with col1:
             client_name = st.text_input(
@@ -189,7 +270,7 @@ if st.session_state.pdf_processed or st.session_state.extracted_data:
         # Submit button
         col_btn1, col_btn2, col_btn3 = st.columns([2, 1, 2])
         with col_btn2:
-            submit = st.form_submit_button("🎯 Generate Cover Page", type="primary", use_container_width=True)
+            submit = st.form_submit_button("🔄 Regenerate PDF with Edits", type="primary", use_container_width=True)
         
         if submit:
             if not client_name or not file_number or not property_description:
