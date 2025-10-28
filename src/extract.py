@@ -107,7 +107,7 @@ def extract_fields_from_schema(words: List[Dict[str, Any]], full_text: str, sche
             results[key] = FieldValue("", 0.0, source or "", ["not_found"])
             continue
         # Postprocess & compute confidence
-        from .schema_loader import apply_postprocess, validate_value
+        from schema_loader import apply_postprocess, validate_value
         value_pp = apply_postprocess(value, fdef.get("postprocess"))
         ok, errs = validate_value(value_pp, fdef.get("validate"))
         conf = score_confidence(source, base_conf, label_score)

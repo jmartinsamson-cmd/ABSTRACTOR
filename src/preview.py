@@ -1,9 +1,9 @@
 from __future__ import annotations
 from typing import Dict, Any, Tuple, Optional
 import fitz
-from .schema_loader import get_field_defs, apply_postprocess, validate_value
-from .calibration import compute_page_transform
-from .render import draw_text_in_box
+from schema_loader import get_field_defs, apply_postprocess, validate_value
+from calibration import compute_page_transform
+from render import draw_text_in_box
 
 
 def _box_to_rect(page: fitz.Page, box: dict, transform: dict) -> fitz.Rect:

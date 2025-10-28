@@ -13,5 +13,10 @@
       // Run from the workspace root so the server operates on the repo
       "cwd": "${workspaceFolder}"
     }
-  }
+  },
+  
+  // Help Pylance/Pyright resolve imports from ./src when using sys.path injection
+  "python.analysis.extraPaths": [
+    "${workspaceFolder}/src"
+  ]
 }

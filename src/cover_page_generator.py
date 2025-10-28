@@ -85,9 +85,9 @@ class CoverPageGenerator:
             page = doc[0]
 
             # Schema-driven rendering
-            from .schema_loader import load_schema, apply_postprocess, validate_value
-            from .calibration import compute_page_transform
-            from .render import draw_text_in_box
+            from schema_loader import load_schema, apply_postprocess, validate_value
+            from calibration import compute_page_transform
+            from render import draw_text_in_box
 
             schema = load_schema("bradley_cover_v1.yml")
             transform = compute_page_transform(doc, schema)
