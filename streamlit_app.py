@@ -77,6 +77,10 @@ with st.sidebar:
                     extractor = FieldExtractor(all_text)
                     fields = extractor.extract_all_fields()
                     
+                    # Debug: Show extracted fields
+                    st.write("### 🔍 Extracted Data:")
+                    st.json(fields)
+                    
                     # Store in session state
                     st.session_state.extracted_data = {
                         'client_name': fields.get('client_name', ''),
@@ -111,8 +115,11 @@ with st.sidebar:
                         present_owners=st.session_state.extracted_data.get('present_owners', ''),
                         names_searched=st.session_state.extracted_data.get('names_searched', ''),
                         conveyance_docs=st.session_state.extracted_data.get('conveyance_documents', ''),
-                        encumbrances=st.session_state.extracted_data.get('encumbrances', '')
+                        encumbrances=st.session_state.extracted_data.get('encumbrances', ''),
+                        verbose=True
                     )
+                    
+                    st.write(f"Cover page generation success: {success}")
                     
                     if success:
                         # Read cover page bytes
