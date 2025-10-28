@@ -109,7 +109,7 @@ with st.sidebar:
                     with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_cover:
                         tmp_cover_path = tmp_cover.name
                     
-                    success = generator.generate_cover_page(st.session_state.extracted_data, tmp_cover_path)
+                    success = generator.fill_cover_page(st.session_state.extracted_data, tmp_cover_path)
                     
                     if success:
                         # Read cover page bytes
@@ -300,7 +300,7 @@ if st.session_state.pdf_processed:
                         with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_cover:
                             tmp_cover_path = tmp_cover.name
                         
-                        success = generator.generate_cover_page(data, tmp_cover_path)
+                        success = generator.fill_cover_page(data, tmp_cover_path)
                         
                         if not success:
                             st.error("❌ Failed to generate cover page.")
