@@ -4,13 +4,9 @@ Creates and fills the Bradley Abstract LLC Conveyance and Mortgage Certificate c
 """
 from typing import Dict, Any, Optional
 from pathlib import Path
-import io
 
 try:
     import fitz  # PyMuPDF
-    from reportlab.pdfgen import canvas
-    from reportlab.lib.pagesizes import letter
-    from reportlab.lib.units import inch
     DEPENDENCIES_AVAILABLE = True
 except ImportError:
     DEPENDENCIES_AVAILABLE = False
@@ -87,56 +83,56 @@ class CoverPageGenerator:
             # Open the template
             doc = fitz.open(str(self.template_path))
             page = doc[0]
-            
-            # Font settings
-            fontsize = 11
-            fontname = "helv"  # Helvetica
-            
-            # Fill in the fields
-            fields_to_fill = {
-                'for': for_field,
-                'file_number': file_number,
-                'property_description': property_description,
-                'period_of_search': period_of_search,
-                'present_owners': present_owners,
+
+            # Schema-driven rendering
+            from .schema_loader import load_schema, apply_postprocess, validate_value
+            from .calibration import compute_page_transform
+            from .render import draw_text_in_box
+
+            schema = load_schema("bradley_cover_v1.yml")
+            transform = compute_page_transform(doc, schema)
+
+            # Map input args to schema field keys
+            data_map = {
+                "for_field": for_field,
+                "file_number": file_number,
+                "property_description": property_description,
+                "period_of_search": period_of_search,
+                "present_owners": present_owners,
+                "names_searched": names_searched,
+                "conveyance_documents": conveyance_docs,
+                "encumbrances": encumbrances,
             }
-            
-            for field_name, value in fields_to_fill.items():
-                if value:
-                    x, y = self.FIELD_COORDS[field_name]
-                    # Convert coordinates (PyMuPDF uses bottom-left origin)
-                    point = fitz.Point(x, page.rect.height - y)
-                    
-                    if verbose:
-                        print(f"Adding {field_name}: {value} at ({x}, {y})")
-                    
-                    page.insert_text(
-                        point,
-                        value,
-                        fontsize=fontsize,
-                        fontname=fontname,
-                        color=(0, 0, 0)
+
+            fields = schema.get("fields", {})
+            validation_failures = []
+            for key, fdef in fields.items():
+                render_def = fdef.get("render", {})
+                text_val = apply_postprocess(data_map.get(key, ""), fdef.get("postprocess"))
+                ok, errs = validate_value(text_val, fdef.get("validate"))
+                if not ok:
+                    validation_failures.append({"field": key, "errors": errs})
+                if render_def:
+                    draw_text_in_box(
+                        page,
+                        text_val,
+                        render_def.get("box", {}),
+                        render_def.get("font", {}),
+                        render_def.get("overflow", {}),
+                        transform,
                     )
-            
-            # Handle multi-line sections
-            if names_searched:
-                self._add_multiline_text(page, names_searched, 'names_searched', fontsize, verbose)
-            
-            if conveyance_docs:
-                self._add_multiline_text(page, conveyance_docs, 'conveyance_docs', fontsize, verbose)
-            
-            if encumbrances:
-                self._add_multiline_text(page, encumbrances, 'encumbrances', fontsize, verbose)
-            
+
             # Save the filled form
-            output_path = Path(output_path)
-            output_path.parent.mkdir(parents=True, exist_ok=True)
+            path_obj = Path(output_path)
+            path_obj.parent.mkdir(parents=True, exist_ok=True)
             
-            doc.save(str(output_path))
+            doc.save(str(path_obj))
             doc.close()
             
             if verbose:
-                print(f"✓ Cover page saved to: {output_path}")
+                if validation_failures:
+                    print(f"Validation warnings: {validation_failures}")
+                print(f"✓ Cover page saved to: {path_obj}")
             
             return True
             
@@ -158,52 +154,11 @@ class CoverPageGenerator:
     
     def create_fillable_form(self, output_path: str = "templates/bradley_abstract_cover_fillable.pdf") -> bool:
         """
-        Create a fillable PDF form version with interactive form fields
-        
-        Args:
-            output_path: Where to save the fillable form
-            
-        Returns:
-            True if successful, False otherwise
+        Deprecated stub: Creating interactive form fields is not supported in this build.
+        Returns False to indicate no file created.
         """
-        try:
-            # Open the template
-            doc = fitz.open(str(self.template_path))
-            page = doc[0]
-            
-            # Define form fields
-            fields = [
-                {"name": "for_field", "rect": [115, 640, 300, 655], "type": "text"},
-                {"name": "file_number", "rect": [320, 640, 450, 655], "type": "text"},
-                {"name": "property_description", "rect": [210, 610, 550, 625], "type": "text"},
-                {"name": "period_of_search", "rect": [165, 585, 400, 600], "type": "text"},
-                {"name": "present_owners", "rect": [165, 555, 550, 570], "type": "text"},
-                {"name": "names_searched", "rect": [100, 350, 550, 415], "type": "textarea"},
-                {"name": "conveyance_docs", "rect": [100, 280, 550, 345], "type": "textarea"},
-                {"name": "encumbrances", "rect": [100, 210, 550, 275], "type": "textarea"},
-            ]
-            
-            # Add form fields to the PDF
-            for field in fields:
-                widget = fitz.Widget()
-                widget.field_name = field["name"]
-                widget.field_type = fitz.PDF_WIDGET_TYPE_TEXT
-                widget.rect = fitz.Rect(field["rect"])
-                widget.text_fontsize = 11
-                page.add_widget(widget)
-            
-            # Save the fillable form
-            output_path = Path(output_path)
-            output_path.parent.mkdir(parents=True, exist_ok=True)
-            doc.save(str(output_path))
-            doc.close()
-            
-            print(f"✓ Fillable form created: {output_path}")
-            return True
-            
-        except Exception as e:
-            print(f"Error creating fillable form: {e}")
-            return False
+        print("Creating interactive form fields is not supported in this build.")
+        return False
 
 
 def merge_cover_with_abstract(cover_path: str, abstract_path: str, output_path: str) -> bool:
@@ -233,16 +188,16 @@ def merge_cover_with_abstract(cover_path: str, abstract_path: str, output_path: 
         merged_doc.insert_pdf(abstract_doc)
         
         # Save merged document
-        output_path = Path(output_path)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        merged_doc.save(str(output_path))
+        path_obj = Path(output_path)
+        path_obj.parent.mkdir(parents=True, exist_ok=True)
+        merged_doc.save(str(path_obj))
         
         # Close all documents
         cover_doc.close()
         abstract_doc.close()
         merged_doc.close()
         
-        print(f"✓ Merged document saved: {output_path}")
+        print(f"✓ Merged document saved: {path_obj}")
         return True
         
     except Exception as e:

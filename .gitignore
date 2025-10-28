@@ -12,7 +12,10 @@ dist/
 build/
 
 # IDEs
-.vscode/
+# Track only settings.json inside .vscode for MCP registration
+!.vscode/
+.vscode/*
+!.vscode/settings.json
 .idea/
 *.swp
 *.swo
@@ -21,6 +24,7 @@ build/
 # Output files
 output/*.json
 output/*.pdf
+output/*.png
 !output/.gitkeep
 
 # Sensitive data
@@ -33,3 +37,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Node
+node_modules/
+**/node_modules/

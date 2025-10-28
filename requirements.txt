@@ -7,3 +7,5 @@ pytesseract
 pdf2image
 python-dotenv
 PyPDF2
+rapidfuzz
+PyYAML

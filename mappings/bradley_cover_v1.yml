@@ -1,0 +1,98 @@
+template:
+  name: bradley_cover
+  version: 1
+  hash: ""
+  page: 1
+calibration:
+  anchor_text: "BRADLEY ABSTRACT"
+  anchor_box_expected: {x: 72, y: 55, w: 180, h: 24}
+  tolerance: {dx: 3, dy: 3, scale: 0.01}
+fields:
+  for_field:
+    label_synonyms: ["FOR", "Client", "Recipient"]
+    extract:
+      zone: {anchor: "Borrower", offset: {x: 10, y: -2, w: 230, h: 18}}
+      regex: "(?i)borrower\\s*[:\\-]\\s*(?P<value>[A-Z][\\w' -]+)"
+    postprocess: [trim, collapse_spaces, titlecase]
+    validate:
+      - {type: not_empty}
+      - {type: min_len, n: 2}
+    render:
+      box: {x: 115, y: 645, w: 180, h: 14}
+      font: {name: "helv", size: 11, leading: 12}
+      overflow: {mode: "autoshrink_min", min_size: 8}
+  file_number:
+    label_synonyms: ["FILE #", "File Number"]
+    extract:
+      zone: {anchor: "FILE #", offset: {x: 8, y: -2, w: 150, h: 18}}
+      regex: '(?i)file\s*(?:#|number)\s*[:\-]?\s*(?P<value>[A-Za-z0-9\-_/]+)'
+    postprocess: [trim, collapse_spaces, uppercase]
+    validate:
+      - {type: not_empty}
+      - {type: min_len, n: 2}
+    render:
+      box: {x: 320, y: 645, w: 160, h: 14}
+      font: {name: "helv", size: 11}
+      overflow: {mode: "autoshrink_min", min_size: 8}
+  property_description:
+    label_synonyms: ["PROPERTY DESCRIPTION", "Subject Property"]
+    extract:
+      zone: {anchor: "Property Address", offset: {x: 10, y: -2, w: 300, h: 18}}
+      regex: "(?i)property address\\s*[:\\-]\\s*(?P<value>.+)"
+    postprocess: [trim, collapse_spaces]
+    validate:
+      - {type: not_empty}
+      - {type: min_len, n: 5}
+    render:
+      box: {x: 210, y: 615, w: 340, h: 28}
+      font: {name: "helv", size: 11}
+      overflow: {mode: "wrap", max_lines: 2, ellipsis: true}
+  period_of_search:
+    label_synonyms: ["PERIOD OF SEARCH"]
+    extract:
+      zone: {anchor: "PERIOD OF SEARCH", offset: {x: 8, y: -2, w: 180, h: 18}}
+      regex: '(?i)period of search\s*[:\-]?\s*(?P<value>[A-Za-z0-9 ,/\-]+)'
+    postprocess: [trim, collapse_spaces]
+    validate:
+      - {type: not_empty}
+    render:
+      box: {x: 165, y: 590, w: 250, h: 14}
+      font: {name: "helv", size: 11}
+      overflow: {mode: "autoshrink_min", min_size: 8}
+  present_owners:
+    label_synonyms: ["PRESENT OWNER(S)"]
+    extract:
+      regex: '(?i)present owner\(s\)\s*[:\-]\s*(?P<value>.+)'
+    postprocess: [trim, collapse_spaces, titlecase]
+    validate:
+      - {type: not_empty}
+      - {type: min_len, n: 2}
+    render:
+      box: {x: 165, y: 560, w: 380, h: 14}
+      font: {name: "helv", size: 11}
+      overflow: {mode: "autoshrink_min", min_size: 8}
+  names_searched:
+    label_synonyms: ["NAMES SEARCHED"]
+    postprocess: [trim]
+    validate:
+      - {type: not_empty}
+    render:
+      box: {x: 100, y: 420, w: 450, h: 60}
+      font: {name: "helv", size: 11, leading: 13}
+      overflow: {mode: "wrap", max_lines: 4, ellipsis: true}
+  conveyance_documents:
+    label_synonyms: ["CONVEYANCE DOCUMENTS"]
+    postprocess: [trim]
+    validate: []
+    render:
+      box: {x: 100, y: 350, w: 450, h: 60}
+      font: {name: "helv", size: 11, leading: 13}
+      overflow: {mode: "wrap", max_lines: 4, ellipsis: true}
+  encumbrances:
+    label_synonyms: ["ENCUMBRANCES"]
+    postprocess: [trim]
+    validate: []
+    render:
+      box: {x: 100, y: 280, w: 450, h: 60}
+      font: {name: "helv", size: 11, leading: 13}
+      overflow: {mode: "wrap", max_lines: 4, ellipsis: true}

@@ -1,0 +1,17 @@
+{
+  // Enable MCP integration in GitHub Copilot Chat
+  "github.copilot.mcp.enabled": true,
+
+  // Register local MCP servers for this workspace
+  "github.copilot.mcp.servers": {
+    "git": {
+      // Use stdio transport by launching the Node server
+      "command": "node",
+      "args": [
+        "./tools/git-mcp-server/src/index.js"
+      ],
+      // Run from the workspace root so the server operates on the repo
+      "cwd": "${workspaceFolder}"
+    }
+  }
+}

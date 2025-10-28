@@ -2,8 +2,6 @@ import streamlit as st
 from pathlib import Path
 import sys
 import tempfile
-import json
-from datetime import datetime
 import io
 import PyPDF2
 
@@ -12,8 +10,10 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from cover_page_generator import BradleyAbstractCoverPage
 from parser import PDFParser
-from field_extractor import FieldExtractor
+# from field_extractor import FieldExtractor  # legacy regex extractor (unused)
 from pdf_assembler import PDFAssembler
+from schema_loader import load_schema
+from preview import render_cover_preview_png
 
 st.set_page_config(page_title="Abstractor - Property Abstract Generator", layout="wide", page_icon="🏛️")
 
@@ -41,6 +41,25 @@ with st.sidebar:
     st.markdown("---")
     
     use_ocr = st.checkbox("Enable OCR (for scanned PDFs)", value=False)
+    if use_ocr:
+        # Show environment readiness for OCR
+        try:
+            from word_index import ocr_environment_status
+            env = ocr_environment_status()
+            if not (env.get('tesseract_bin') and env.get('poppler_pdfinfo')):
+                missing = []
+                if not env.get('tesseract_bin'):
+                    missing.append('tesseract')
+                if not env.get('poppler_pdfinfo'):
+                    missing.append('poppler (pdfinfo)')
+                st.warning(f"OCR requested but missing: {', '.join(missing)}. We'll fall back to the PDF text layer if available.")
+                with st.expander("How to enable OCR on Linux (optional)"):
+                    st.markdown("Install system dependencies:")
+                    st.code("sudo apt-get update\nsudo apt-get install -y tesseract-ocr poppler-utils", language="bash")
+                    st.markdown("Then reinstall Python deps if needed:")
+                    st.code("pip3 install pdf2image pytesseract", language="bash")
+        except Exception:
+            st.warning("OCR requested; unable to verify OCR environment. If OCR fails, we'll fall back to text layer.")
     
     if uploaded_files and len(uploaded_files) > 0:
         if st.button("🔍 Extract Data from PDFs", type="primary", use_container_width=True):
@@ -49,6 +68,7 @@ with st.sidebar:
                     # Save uploaded files
                     st.session_state.uploaded_pdfs = []
                     all_text = ""
+                    tmp_paths = []
                     
                     for uploaded_file in uploaded_files:
                         # Save temporarily
@@ -63,29 +83,38 @@ with st.sidebar:
                             'bytes': file_bytes,
                             'temp_path': tmp_path
                         })
+                        tmp_paths.append(tmp_path)
                         
                         # Parse PDF
                         parser = PDFParser(tmp_path, use_ocr=use_ocr)
                         text = parser.extract_text()
                         all_text += f"\n\n=== {uploaded_file.name} ===\n{text}"
-                    
-                    # Extract fields from combined text
-                    extractor = FieldExtractor(all_text)
-                    fields = extractor.extract_all_fields()
+                    # Schema-based extraction (zone + regex) with confidences
+                    from schema_loader import load_schema
+                    from word_index import collect_words_from_sources
+                    from extract import extract_fields_from_schema
+
+                    schema = load_schema('bradley_cover_v1.yml')
+                    words = collect_words_from_sources(tmp_paths, prefer_ocr=use_ocr)
+                    fv_map = extract_fields_from_schema(words, all_text, schema)
                     
                     # Store in session state
+                    def _v(m, k):
+                        fv = m.get(k)
+                        return fv.value if fv else ''
                     st.session_state.extracted_data = {
-                        'client_name': fields.get('client_name', ''),
-                        'file_number': fields.get('file_number', ''),
-                        'property_description': fields.get('property_description', ''),
-                        'period_of_search': fields.get('period_of_search', ''),
-                        'present_owners': fields.get('present_owners', ''),
+                        'client_name': _v(fv_map, 'for_field'),
+                        'file_number': _v(fv_map, 'file_number'),
+                        'property_description': _v(fv_map, 'property_description'),
+                        'period_of_search': _v(fv_map, 'period_of_search'),
+                        'present_owners': _v(fv_map, 'present_owners'),
                         'names_searched': 'All names searched 20 years for Federal judgments & liens',
-                        'conveyance_documents': fields.get('conveyance_documents', ''),
-                        'encumbrances': fields.get('encumbrances', ''),
-                        'assessment_number': fields.get('assessment_number', '0610429400'),
+                        'conveyance_documents': '',
+                        'encumbrances': '',
+                        'assessment_number': '0610429400',
                         'tax_status': 'Taxes Paid Annually'
                     }
+                    st.session_state.field_confidences = {k: v.confidence for k, v in fv_map.items()}
                     st.session_state.pdf_processed = True
                     st.success("✅ Data extracted successfully! Review and edit below.")
                     st.rerun()
@@ -93,7 +122,6 @@ with st.sidebar:
                 except Exception as e:
                     st.error(f"❌ Error extracting data: {str(e)}")
                     st.exception(e)
-    
     st.markdown("---")
     st.markdown("### 💡 How it works")
     st.markdown("""
@@ -106,167 +134,180 @@ with st.sidebar:
 # Main content area
 if st.session_state.pdf_processed or st.session_state.extracted_data:
     st.subheader("✏️ Review and Edit Extracted Information")
-    st.info("All fields are editable. Update any information as needed before generating the cover page.")
-    
-    # Create editable form
-    with st.form("cover_page_form"):
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            client_name = st.text_input(
-                "Client Name (FOR:) *", 
-                value=st.session_state.extracted_data.get('client_name', ''),
-                placeholder="Enter or verify client name"
-            )
-            file_number = st.text_input(
-                "File Number *", 
-                value=st.session_state.extracted_data.get('file_number', ''),
-                placeholder="e.g., 2024-001"
-            )
-            property_description = st.text_area(
-                "Property Description *",
-                value=st.session_state.extracted_data.get('property_description', ''),
-                placeholder="Enter complete property description",
-                height=120
-            )
-        
-        with col2:
-            period_of_search = st.text_input(
-                "Period of Search *",
-                value=st.session_state.extracted_data.get('period_of_search', ''),
-                placeholder="e.g., 20 years, 1/1/2004 - present"
-            )
-            present_owners = st.text_input(
-                "Present Owner(s) *",
-                value=st.session_state.extracted_data.get('present_owners', ''),
-                placeholder="Enter current property owner(s)"
-            )
-            
-            names_searched = st.text_area(
-                "Names Searched",
-                value=st.session_state.extracted_data.get('names_searched', 'All names searched 20 years for Federal judgments & liens'),
-                height=80
-            )
-        
-        st.markdown("---")
-        st.markdown("#### 📑 Additional Information")
-        
-        col3, col4 = st.columns(2)
-        
-        with col3:
-            conveyance_docs = st.text_area(
-                "Conveyance Documents",
-                value=st.session_state.extracted_data.get('conveyance_documents', ''),
-                placeholder="List relevant conveyance documents",
-                height=100
-            )
-        
-        with col4:
-            encumbrances = st.text_area(
-                "Encumbrances",
-                value=st.session_state.extracted_data.get('encumbrances', ''),
-                placeholder="List any encumbrances",
-                height=100
-            )
-        
-        st.markdown("#### 💰 Tax Information")
-        col5, col6 = st.columns(2)
-        with col5:
-            assessment_number = st.text_input(
-                "Assessment Number", 
-                value=st.session_state.extracted_data.get('assessment_number', '0610429400')
-            )
-        with col6:
-            tax_status = st.text_input(
-                "Tax Payment Status", 
-                value=st.session_state.extracted_data.get('tax_status', 'Taxes Paid Annually')
-            )
-        
-        st.markdown("---")
-        
-        # Submit button
-        col_btn1, col_btn2, col_btn3 = st.columns([2, 1, 2])
-        with col_btn2:
-            submit = st.form_submit_button("🎯 Generate Cover Page", type="primary", use_container_width=True)
-        
-        if submit:
-            if not client_name or not file_number or not property_description:
-                st.error("⚠️ Please fill in all required fields (*)")
-            else:
-                with st.spinner("Generating cover page..."):
-                    try:
-                        # Create data dictionary
-                        data = {
-                            'client_name': client_name,
-                            'file_number': file_number,
-                            'property_description': property_description,
-                            'period_of_search': period_of_search,
-                            'present_owners': present_owners,
-                            'names_searched': names_searched,
-                            'conveyance_documents': conveyance_docs,
-                            'encumbrances': encumbrances,
-                            'assessment_number': assessment_number,
-                            'tax_status': tax_status
-                        }
-                        
-                        # Generate cover page
-                        generator = BradleyAbstractCoverPage()
-                        cover_page_buffer = io.BytesIO()
-                        
-                        # Create temp file for cover page
-                        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_cover:
-                            tmp_cover_path = tmp_cover.name
-                        
-                        success = generator.generate_cover_page(data, tmp_cover_path)
-                        
-                        if not success:
-                            st.error("❌ Failed to generate cover page.")
-                        else:
-                            # Read cover page bytes
-                            with open(tmp_cover_path, 'rb') as f:
-                                cover_page_bytes = f.read()
-                            
-                            # Assemble complete PDF: cover page + all source documents
-                            assembler = PDFAssembler()
-                            
-                            # Get source document paths/bytes
-                            source_docs = [pdf_info['bytes'] for pdf_info in st.session_state.uploaded_pdfs]
-                            
-                            # Assemble: cover page as "billing" (page 1), no bradley form (already in cover), all source docs
-                            complete_pdf_bytes = assembler.assemble_abstract(
-                                billing_pdf_bytes=cover_page_bytes,
-                                bradley_form_bytes=None,  # Cover page already contains the form
-                                scanned_documents=source_docs,
-                                output_path=None
-                            )
-                            
-                            # Save to output folder
-                            output_path = Path("output") / f"complete_abstract_{file_number.replace('/', '_')}.pdf"
-                            output_path.parent.mkdir(exist_ok=True)
-                            
-                            with open(output_path, 'wb') as f:
-                                f.write(complete_pdf_bytes)
-                            
-                            st.success(f"✅ Complete property abstract generated successfully!")
-                            
-                            # Provide download button
-                            st.download_button(
-                                label="📥 Download Complete Property Abstract PDF",
-                                data=complete_pdf_bytes,
-                                file_name=f"bradley_abstract_{file_number.replace('/', '_')}.pdf",
-                                mime="application/pdf",
-                                use_container_width=True
-                            )
-                            
-                            st.info(f"📁 Saved to: `{output_path}`")
-                            
-                            # Show page count
-                            pdf_reader = PyPDF2.PdfReader(io.BytesIO(complete_pdf_bytes))
-                            st.info(f"📄 Total pages: {len(pdf_reader.pages)} (1 cover page + {len(pdf_reader.pages)-1} document pages)")
-                            
-                    except Exception as e:
-                        st.error(f"❌ Error: {str(e)}")
-                        st.exception(e)
+    st.info("Live preview updates as you type. Red fields must be corrected before rendering.")
+
+    # Inputs (no form to enable live updates)
+    col1, col2 = st.columns(2)
+    with col1:
+        client_name = st.text_input(
+            "Client Name (FOR:) *",
+            value=st.session_state.extracted_data.get('client_name', ''),
+            placeholder="Enter or verify client name",
+            key="client_name_input",
+        )
+        file_number = st.text_input(
+            "File Number *",
+            value=st.session_state.extracted_data.get('file_number', ''),
+            placeholder="e.g., 2024-001",
+            key="file_number_input",
+        )
+        property_description = st.text_area(
+            "Property Description *",
+            value=st.session_state.extracted_data.get('property_description', ''),
+            placeholder="Enter complete property description",
+            height=120,
+            key="property_description_input",
+        )
+    with col2:
+        period_of_search = st.text_input(
+            "Period of Search *",
+            value=st.session_state.extracted_data.get('period_of_search', ''),
+            placeholder="e.g., 20 years, 1/1/2004 - present",
+            key="period_of_search_input",
+        )
+        present_owners = st.text_input(
+            "Present Owner(s) *",
+            value=st.session_state.extracted_data.get('present_owners', ''),
+            placeholder="Enter current property owner(s)",
+            key="present_owners_input",
+        )
+        names_searched = st.text_area(
+            "Names Searched",
+            value=st.session_state.extracted_data.get('names_searched', 'All names searched 20 years for Federal judgments & liens'),
+            height=80,
+            key="names_searched_input",
+        )
+
+    st.markdown("---")
+    st.markdown("#### 📑 Additional Information")
+    col3, col4 = st.columns(2)
+    with col3:
+        conveyance_docs = st.text_area(
+            "Conveyance Documents",
+            value=st.session_state.extracted_data.get('conveyance_documents', ''),
+            placeholder="List relevant conveyance documents",
+            height=100,
+            key="conveyance_docs_input",
+        )
+    with col4:
+        encumbrances = st.text_area(
+            "Encumbrances",
+            value=st.session_state.extracted_data.get('encumbrances', ''),
+            placeholder="List any encumbrances",
+            height=100,
+            key="encumbrances_input",
+        )
+
+    st.markdown("#### 💰 Tax Information")
+    col5, col6 = st.columns(2)
+    with col5:
+        assessment_number = st.text_input(
+            "Assessment Number",
+            value=st.session_state.extracted_data.get('assessment_number', '0610429400'),
+            key="assessment_number_input",
+        )
+    with col6:
+        tax_status = st.text_input(
+            "Tax Payment Status",
+            value=st.session_state.extracted_data.get('tax_status', 'Taxes Paid Annually'),
+            key="tax_status_input",
+        )
+
+    # Build data mapping for schema fields
+    cover_data = {
+        'for_field': client_name,
+        'file_number': file_number,
+        'property_description': property_description,
+        'period_of_search': period_of_search,
+        'present_owners': present_owners,
+        'names_searched': names_searched,
+        'conveyance_documents': conveyance_docs,
+        'encumbrances': encumbrances,
+    }
+
+    # Live preview with flags
+    st.markdown("---")
+    st.markdown("### 👀 Preview (what will be printed)")
+    template_path = str(Path(__file__).parent / 'templates' / 'bradley_abstract_cover.pdf')
+    try:
+        schema = load_schema('bradley_cover_v1.yml')
+        confidences = st.session_state.get('field_confidences', {})
+        png_bytes, statuses, transform = render_cover_preview_png(template_path, schema, cover_data, confidences=confidences)
+        st.image(png_bytes, caption=f"Alignment: {transform.get('status', 'n/a')}", use_column_width=True)
+        # Legend and statuses
+        cols = st.columns([1, 2])
+        with cols[0]:
+            st.markdown("- 🟢 ≥0.85\n- 🟡 0.6–0.85\n- 🔴 <0.6")
+        with cols[1]:
+            bad = []
+            for k, s in statuses.items():
+                color = '🟢' if s['color']=='green' else ('🟡' if s['color']=='yellow' else '🔴')
+                errs = (", ".join(s['errors'])) if s['errors'] else ""
+                st.write(f"{color} {k.replace('_',' ').title()} — {s['confidence']:.2f} {errs}")
+                if s['color'] == 'red':
+                    bad.append(k)
+    except Exception as e:
+        st.warning(f"Preview unavailable: {e}")
+        bad = []
+
+    st.markdown("---")
+    # Render button is disabled if any red fields
+    disabled = len(bad) > 0
+    if disabled:
+        st.error("Fix red fields before rendering.")
+    if st.button("🎯 Generate Cover Page", type="primary", use_container_width=True, disabled=disabled):
+        with st.spinner("Generating cover page..."):
+            try:
+                # Legacy-compatible mapping for generator
+                data = {
+                    'client_name': client_name,
+                    'file_number': file_number,
+                    'property_description': property_description,
+                    'period_of_search': period_of_search,
+                    'present_owners': present_owners,
+                    'names_searched': names_searched,
+                    'conveyance_documents': conveyance_docs,
+                    'encumbrances': encumbrances,
+                    'assessment_number': assessment_number,
+                    'tax_status': tax_status
+                }
+
+                generator = BradleyAbstractCoverPage()
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as tmp_cover:
+                    tmp_cover_path = tmp_cover.name
+                success = generator.generate_cover_page(data, tmp_cover_path)
+                if not success:
+                    st.error("❌ Failed to generate cover page.")
+                else:
+                    with open(tmp_cover_path, 'rb') as f:
+                        cover_page_bytes = f.read()
+                    assembler = PDFAssembler()
+                    source_docs = [pdf_info['bytes'] for pdf_info in st.session_state.uploaded_pdfs]
+                    complete_pdf_bytes = assembler.assemble_abstract(
+                        billing_pdf_bytes=cover_page_bytes,
+                        bradley_form_bytes=None,
+                        scanned_documents=source_docs,
+                        output_path=None
+                    )
+                    safe_fn = (file_number or "").replace('/', '_')
+                    output_path = Path("output") / f"complete_abstract_{safe_fn}.pdf"
+                    output_path.parent.mkdir(exist_ok=True)
+                    with open(output_path, 'wb') as f:
+                        f.write(complete_pdf_bytes)
+                    st.success("✅ Complete property abstract generated successfully!")
+                    st.download_button(
+                        label="📥 Download Complete Property Abstract PDF",
+                        data=complete_pdf_bytes,
+                        file_name=f"bradley_abstract_{safe_fn}.pdf",
+                        mime="application/pdf",
+                        use_container_width=True
+                    )
+                    st.info(f"📁 Saved to: `{output_path}`")
+                    pdf_reader = PyPDF2.PdfReader(io.BytesIO(complete_pdf_bytes))
+                    st.info(f"📄 Total pages: {len(pdf_reader.pages)} (1 cover page + {len(pdf_reader.pages)-1} document pages)")
+            except Exception as e:
+                st.error(f"❌ Error: {str(e)}")
+                st.exception(e)
 
 else:
     # Welcome screen when no PDFs uploaded

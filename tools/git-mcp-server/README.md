@@ -1,4 +1,52 @@
-# Git MCP Server (local)
+# git-mcp-server
+
+A minimal Model Context Protocol (MCP) server that exposes useful Git operations for the current workspace via stdio.
+
+## Prerequisites
+
+- Node.js 18+ and npm available on your PATH
+- This folder is inside a Git repository (the server will error if not)
+
+## Install
+
+From the repo root:
+
+```bash
+# Install dependencies for the MCP server
+(cd tools/git-mcp-server && npm install)
+```
+
+## Run (manual)
+
+```bash
+# From the repo root
+node tools/git-mcp-server/src/index.js
+```
+
+The server prints a message to stderr indicating it is running. It is intended to be used by an MCP-compatible client over stdio.
+
+## VS Code + GitHub Copilot Chat integration
+
+This repo includes `.vscode/settings.json` to register this server with Copilot Chat:
+
+- Enables MCP integration
+- Registers the `git` server using Node and stdio transport
+
+If Node isn’t available in your environment, install it or use a shell with Node in PATH. Then reload VS Code.
+
+## Available tools
+
+- `git_status` — short repo status (branch, ahead/behind, staged/unstaged, untracked)
+- `git_log` — recent commits (arg: `max`, default 10)
+- `git_diff` — diff (args: `range` like `HEAD~1..HEAD`, and/or `path`)
+- `git_commit` — commit staged changes with message (args: `message`, `all`)
+- `git_push` — push current branch (args: `remote`, `branch`)
+
+## Troubleshooting
+
+- “node: command not found”: install Node.js 18+ and ensure `node` is on PATH.
+- “Current directory is not a Git repository”: open this folder as a Git repo (e.g., initialize with `git init` or open a cloned repo).
+- Copilot Chat doesn’t list tools: ensure you reloaded VS Code after installing Node, and check `.vscode/settings.json` MCP configuration.# Git MCP Server (local)
 
 Minimal Model Context Protocol (MCP) server exposing Git operations for this workspace.
 
