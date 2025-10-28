@@ -45,15 +45,11 @@ with st.sidebar:
     st.info("📄 **Smart Text Extraction:** Uses pdfplumber + OCR fallback for best results")
     
     if uploaded_files and len(uploaded_files) > 0:
-        st.write(f"📁 Files uploaded: {len(uploaded_files)}")  # Debug
         extract_button = st.button("🔍 Extract Data from PDFs", type="primary", use_container_width=True, key="extract_btn")
-        st.write(f"Button clicked: {extract_button}")  # Debug
         
         if extract_button:
-            st.write("🚀 Starting extraction...")  # Debug
             with st.spinner("Extracting data from all PDFs..."):
                 try:
-                    st.write("💾 Saving uploaded files...")  # Debug
                     # Save uploaded files
                     st.session_state.uploaded_pdfs = []
                     all_text = ""
@@ -80,9 +76,6 @@ with st.sidebar:
                     # Extract fields from combined text
                     extractor = FieldExtractor(all_text)
                     fields = extractor.extract_all_fields()
-                    
-                    # Debug: Show what was extracted
-                    st.write("🔍 **Debug - Extracted fields:**", fields)
                     
                     # Store in session state
                     st.session_state.extracted_data = {
