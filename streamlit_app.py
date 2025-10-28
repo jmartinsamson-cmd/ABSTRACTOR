@@ -194,83 +194,83 @@ if st.session_state.pdf_processed:
         # Create editable form
         with st.form("edit_form"):
             col1, col2 = st.columns(2)
-        
-        with col1:
-            client_name = st.text_input(
-                "Client Name (FOR:) *", 
-                value=st.session_state.extracted_data.get('client_name', ''),
-                placeholder="Enter or verify client name"
-            )
-            file_number = st.text_input(
-                "File Number *", 
-                value=st.session_state.extracted_data.get('file_number', ''),
-                placeholder="e.g., 2024-001"
-            )
-            property_description = st.text_area(
-                "Property Description *",
-                value=st.session_state.extracted_data.get('property_description', ''),
-                placeholder="Enter complete property description",
-                height=120
-            )
-        
-        with col2:
-            period_of_search = st.text_input(
-                "Period of Search *",
-                value=st.session_state.extracted_data.get('period_of_search', ''),
-                placeholder="e.g., 20 years, 1/1/2004 - present"
-            )
-            present_owners = st.text_input(
-                "Present Owner(s) *",
-                value=st.session_state.extracted_data.get('present_owners', ''),
-                placeholder="Enter current property owner(s)"
-            )
             
-            names_searched = st.text_area(
-                "Names Searched",
-                value=st.session_state.extracted_data.get('names_searched', 'All names searched 20 years for Federal judgments & liens'),
-                height=80
-            )
-        
-        st.markdown("---")
-        st.markdown("#### 📑 Additional Information")
-        
-        col3, col4 = st.columns(2)
-        
-        with col3:
-            conveyance_docs = st.text_area(
-                "Conveyance Documents",
-                value=st.session_state.extracted_data.get('conveyance_documents', ''),
-                placeholder="List relevant conveyance documents",
-                height=100
-            )
-        
-        with col4:
-            encumbrances = st.text_area(
-                "Encumbrances",
-                value=st.session_state.extracted_data.get('encumbrances', ''),
-                placeholder="List any encumbrances",
-                height=100
-            )
-        
-        st.markdown("#### 💰 Tax Information")
-        col5, col6 = st.columns(2)
-        with col5:
-            assessment_number = st.text_input(
-                "Assessment Number", 
-                value=st.session_state.extracted_data.get('assessment_number', '0610429400')
-            )
-        with col6:
-            tax_status = st.text_input(
-                "Tax Payment Status", 
-                value=st.session_state.extracted_data.get('tax_status', 'Taxes Paid Annually')
-            )
-        
-        st.markdown("---")
-        
-        # Submit button
-        col_btn1, col_btn2, col_btn3 = st.columns([2, 1, 2])
-        with col_btn2:
-            submit = st.form_submit_button("🔄 Regenerate PDF with Edits", type="primary", use_container_width=True)
+            with col1:
+                client_name = st.text_input(
+                    "Client Name (FOR:) *", 
+                    value=st.session_state.extracted_data.get('client_name', ''),
+                    placeholder="Enter or verify client name"
+                )
+                file_number = st.text_input(
+                    "File Number *", 
+                    value=st.session_state.extracted_data.get('file_number', ''),
+                    placeholder="e.g., 2024-001"
+                )
+                property_description = st.text_area(
+                    "Property Description *",
+                    value=st.session_state.extracted_data.get('property_description', ''),
+                    placeholder="Enter complete property description",
+                    height=120
+                )
+            
+            with col2:
+                period_of_search = st.text_input(
+                    "Period of Search *",
+                    value=st.session_state.extracted_data.get('period_of_search', ''),
+                    placeholder="e.g., 20 years, 1/1/2004 - present"
+                )
+                present_owners = st.text_input(
+                    "Present Owner(s) *",
+                    value=st.session_state.extracted_data.get('present_owners', ''),
+                    placeholder="Enter current property owner(s)"
+                )
+                
+                names_searched = st.text_area(
+                    "Names Searched",
+                    value=st.session_state.extracted_data.get('names_searched', 'All names searched 20 years for Federal judgments & liens'),
+                    height=80
+                )
+            
+            st.markdown("---")
+            st.markdown("#### 📑 Additional Information")
+            
+            col3, col4 = st.columns(2)
+            
+            with col3:
+                conveyance_docs = st.text_area(
+                    "Conveyance Documents",
+                    value=st.session_state.extracted_data.get('conveyance_documents', ''),
+                    placeholder="List relevant conveyance documents",
+                    height=100
+                )
+            
+            with col4:
+                encumbrances = st.text_area(
+                    "Encumbrances",
+                    value=st.session_state.extracted_data.get('encumbrances', ''),
+                    placeholder="List any encumbrances",
+                    height=100
+                )
+            
+            st.markdown("#### 💰 Tax Information")
+            col5, col6 = st.columns(2)
+            with col5:
+                assessment_number = st.text_input(
+                    "Assessment Number", 
+                    value=st.session_state.extracted_data.get('assessment_number', '0610429400')
+                )
+            with col6:
+                tax_status = st.text_input(
+                    "Tax Payment Status", 
+                    value=st.session_state.extracted_data.get('tax_status', 'Taxes Paid Annually')
+                )
+            
+            st.markdown("---")
+            
+            # Submit button
+            col_btn1, col_btn2, col_btn3 = st.columns([2, 1, 2])
+            with col_btn2:
+                submit = st.form_submit_button("🔄 Regenerate PDF with Edits", type="primary", use_container_width=True)
         
         if submit:
             if not client_name or not file_number or not property_description:
