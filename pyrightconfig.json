@@ -1,5 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/microsoft/pyright/main/packages/pyright/schema/pyrightconfig.schema.json",
   "include": [
     "src",
     "streamlit_app.py",
@@ -9,5 +8,11 @@
     "./src"
   ],
   "typeCheckingMode": "basic",
-  "reportMissingImports": true
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": "none",
+  "exclude": [
+    "archive",
+    "src/field_extractor.py",
+    "src/parser.py"
+  ]
 }

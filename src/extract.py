@@ -98,7 +98,10 @@ def extract_fields_from_schema(words: List[Dict[str, Any]], full_text: str, sche
         # Fallback regex
         if not value and isinstance(ex, dict) and ex.get("regex"):
             rx = ex.get("regex")
-            text = extract_with_regex(full_text or "", rx)
+            if isinstance(rx, str) and rx:
+                text = extract_with_regex(full_text or "", rx)
+            else:
+                text = ""
             if text:
                 value = text
                 source = "regex_text"

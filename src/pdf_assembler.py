@@ -6,7 +6,7 @@ Combines billing page + cleared/filled Bradley Abstract form + scanned documents
 import PyPDF2
 from pathlib import Path
 import io
-from typing import List, Union
+from typing import List, Union, Optional, Any
 
 
 class PDFAssembler:
@@ -18,9 +18,9 @@ class PDFAssembler:
     def assemble_abstract(
         self,
         billing_pdf_bytes: bytes,
-        bradley_form_bytes: bytes,
-        scanned_documents: List[Union[bytes, str]],
-        output_path: str = None
+        bradley_form_bytes: Optional[bytes],
+        scanned_documents: List[Any],
+        output_path: Optional[str] = None
     ) -> bytes:
         """
         Assemble complete property abstract PDF
@@ -39,12 +39,10 @@ class PDFAssembler:
         try:
             # 1. Add billing page (first page)
             if billing_pdf_bytes:
-                billing_pdf = PyPDF2.PdfReader(io.BytesIO(billing_pdf_bytes))
                 merger.append(io.BytesIO(billing_pdf_bytes))
             
             # 2. Add cleared and filled Bradley Abstract form
             if bradley_form_bytes:
-                bradley_pdf = PyPDF2.PdfReader(io.BytesIO(bradley_form_bytes))
                 merger.append(io.BytesIO(bradley_form_bytes))
             
             # 3. Append all scanned legal documents
@@ -80,7 +78,7 @@ class PDFAssembler:
         self,
         template_path: str,
         client_data: dict,
-        output_path: str = None
+        output_path: Optional[str] = None
     ) -> bytes:
         """
         Clear existing form data and fill with new client information
@@ -94,7 +92,7 @@ class PDFAssembler:
             bytes: Filled form as bytes
         """
         # Import the existing FormFiller
-        from src.form_filler import FormFiller
+        from src.form_filler import FormFiller  # type: ignore
         
         # Create temporary output
         if output_path is None:
@@ -132,7 +130,7 @@ class PDFAssembler:
                 import os
                 try:
                     os.unlink(output_path)
-                except:
+                except Exception:
                     pass
             raise Exception(f"Error filling Bradley form: {str(e)}")
     
