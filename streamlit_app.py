@@ -17,6 +17,19 @@ from preview import render_cover_preview_png
 
 st.set_page_config(page_title="Abstractor - Property Abstract Generator", layout="wide", page_icon="🏛️")
 
+# Inject Canva-inspired theme CSS
+def _inject_theme_css():
+    css_path = Path(__file__).parent / "assets" / "canva_theme.css"
+    if css_path.exists():
+        try:
+            css = css_path.read_text()
+            st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+        except Exception:
+            # Non-fatal if theme can't be injected
+            pass
+
+_inject_theme_css()
+
 # Initialize session state
 if 'extracted_data' not in st.session_state:
     st.session_state.extracted_data = {}
@@ -25,8 +38,16 @@ if 'pdf_processed' not in st.session_state:
 if 'uploaded_pdfs' not in st.session_state:
     st.session_state.uploaded_pdfs = []
 
-st.title("🏛️ Bradley Abstract - Property Abstract Generator")
-st.markdown("**Upload client PDFs → Auto-extract data → Edit inline → Generate complete abstract**")
+# Hero header (styled)
+st.markdown(
+        """
+        <div class="canva-header">
+            <h1 class="site-title">Bradley Abstract — Property Abstract Generator</h1>
+            <p class="subtitle">Upload → Auto-extract → Review → Generate your complete abstract</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+)
 
 # Sidebar
 with st.sidebar:
@@ -237,7 +258,20 @@ if st.session_state.pdf_processed or st.session_state.extracted_data:
         # Legend and statuses
         cols = st.columns([1, 2])
         with cols[0]:
-            st.markdown("- 🟢 ≥0.85\n- 🟡 0.6–0.85\n- 🔴 <0.6")
+            st.markdown(
+                """
+                <div>
+                  <span class="legend-chip">🟢 confidence ≥ 0.85</span>
+                </div>
+                <div style="margin-top: 0.35rem;">
+                  <span class="legend-chip">🟡 0.60 – 0.85</span>
+                </div>
+                <div style="margin-top: 0.35rem;">
+                  <span class="legend-chip">🔴 &lt; 0.60</span>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
         with cols[1]:
             bad = []
             for k, s in statuses.items():
