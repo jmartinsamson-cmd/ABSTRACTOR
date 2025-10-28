@@ -147,6 +147,7 @@ class PDFParser:
         if not OCR_AVAILABLE:
             print("⚠️  OCR libraries not available.")
             print("Install with: pip install pytesseract pdf2image Pillow")
+            print("Continuing with regular text extraction...")
             return self.text
         try:
             print("Converting PDF to images...")
@@ -169,15 +170,21 @@ class PDFParser:
             self.ocr_used = True
             print(f"✓ OCR complete! Extracted {len(self.text)} characters")
             return self.text
-        except FileNotFoundError as e:
-            if 'tesseract' in str(e).lower():
+        except Exception as e:
+            # Catch all OCR errors (including poppler not found)
+            error_msg = str(e).lower()
+            if 'tesseract' in error_msg:
                 print("\n⚠️  Tesseract OCR is not installed!")
                 print("\nTo enable OCR for scanned PDFs:")
                 print("  1. Run: install_tesseract.ps1 (as Administrator)")
                 print("  2. Or download from: https://github.com/UB-Mannheim/tesseract/wiki")
-                print("  3. See OCR_SETUP.md for detailed instructions\n")
+            elif 'poppler' in error_msg or 'page count' in error_msg:
+                print("\n⚠️  Poppler is not installed!")
+                print("\nPoppler is required for OCR functionality.")
+                print("For now, continuing with regular text extraction...")
             else:
                 print(f"⚠️  OCR failed: {str(e)}")
+            print("Continuing with regular text extraction...")
             return self.text
     
     def extract_images(self, output_dir: Optional[Path] = None) -> List[Dict[str, any]]:
