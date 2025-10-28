@@ -40,7 +40,9 @@ with st.sidebar:
     
     st.markdown("---")
     
-    use_ocr = st.checkbox("Enable OCR (for scanned PDFs)", value=False)
+    # OCR is always enabled for best text extraction
+    use_ocr = True
+    st.info("📄 **Smart Text Extraction:** Uses pdfplumber + OCR fallback for best results")
     
     if uploaded_files and len(uploaded_files) > 0:
         if st.button("🔍 Extract Data from PDFs", type="primary", use_container_width=True):

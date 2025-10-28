@@ -25,6 +25,14 @@ except ImportError:
     OCR_AVAILABLE = False
     print("Warning: OCR libraries not available. Install pytesseract and pdf2image for scanned PDF support.")
 
+# pdfplumber for better text extraction
+try:
+    import pdfplumber
+    PDFPLUMBER_AVAILABLE = True
+except ImportError:
+    PDFPLUMBER_AVAILABLE = False
+    print("Warning: pdfplumber not available. Text extraction quality may be reduced.")
+
 
 class PDFParser:
     def _preprocess_image_for_ocr(self, image):
@@ -70,12 +78,17 @@ class PDFParser:
         self.ocr_used = False
         
     def extract_text(self) -> str:
-        """Extract all text from the PDF, using OCR if needed"""
+        """Extract all text from the PDF, always attempting OCR for best results"""
         try:
+            # Try pdfplumber first (better text extraction)
+            if PDFPLUMBER_AVAILABLE:
+                return self._extract_with_pdfplumber()
+            
+            # Fallback to PyPDF2
             reader = PdfReader(self.pdf_path)
             self.pages = []
             
-            # Try normal text extraction first
+            # Try normal text extraction
             for page in reader.pages:
                 page_text = page.extract_text()
                 if page_text:
@@ -83,14 +96,46 @@ class PDFParser:
             
             self.text = "\n\n".join(self.pages)
             
-            # Check if we got meaningful text
-            if self._is_text_quality_low(self.text) and self.use_ocr:
-                print(f"Low quality text detected. Attempting OCR...")
+            # Always attempt OCR if available for best results
+            if OCR_AVAILABLE and self.use_ocr:
+                print(f"Attempting OCR for enhanced text extraction...")
                 return self._extract_with_ocr()
             
             return self.text
         except Exception as e:
             raise Exception(f"Error extracting text from PDF: {str(e)}")
+    
+    def _extract_with_pdfplumber(self) -> str:
+        """Extract text using pdfplumber (better than PyPDF2)"""
+        try:
+            with pdfplumber.open(self.pdf_path) as pdf:
+                self.pages = []
+                for page in pdf.pages:
+                    page_text = page.extract_text()
+                    if page_text:
+                        self.pages.append(page_text)
+                    else:
+                        self.pages.append("")
+                
+                self.text = "\n\n".join(self.pages)
+                
+                # Still attempt OCR if available for even better results
+                if OCR_AVAILABLE and self.use_ocr and self._is_text_quality_low(self.text):
+                    print(f"Text quality could be improved. Attempting OCR...")
+                    return self._extract_with_ocr()
+                
+                return self.text
+        except Exception as e:
+            print(f"pdfplumber extraction failed: {str(e)}, falling back to PyPDF2")
+            # Fallback to PyPDF2
+            reader = PdfReader(self.pdf_path)
+            self.pages = []
+            for page in reader.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    self.pages.append(page_text)
+            self.text = "\n\n".join(self.pages)
+            return self.text
     
     def extract_tables(self) -> List[List[List[str]]]:
         """Extract tables from the PDF (basic implementation)"""
